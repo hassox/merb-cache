@@ -1,0 +1,1 @@
+class CacheSpecController < Merb::Controller; end
