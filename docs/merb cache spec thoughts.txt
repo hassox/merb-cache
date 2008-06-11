@@ -1,0 +1,55 @@
+## Outline
+	
+	To provide a cleaner, more modular, heavier spec'd, more blackbox'd cache engine for Merb
+
+## Not going to do, but happy for someone else to implement within the correct structure
+	# Fragment caching
+	# Page caching
+		»	Same as action caching except something is written to a HTML file
+
+## Functionality talk
+
+	# Cache stores
+		»	Mint cache (READ TOP OF: http://github.com/benschwarz/merb-more/tree/master/merb-cache/README)
+		»	Others to be ported from existing merb-cache
+	
+	# Cache store wrapper "Rack for cache stores"	
+	
+	# Store caches using GZip compression (Like: http://github.com/tobi/cacheable/tree/master)
+	
+	# Action caching	
+		# HTTP (Leverage existing standards and actually talk to the browser, rather than straight up serving)
+			»	Only cache 200 responses
+			»	Serve compressed caches using GZip if the client supports it
+			»	Set ETag headers, amongst others
+			»	Last-Modified header to the current date/time when a fresh (uncached) version of the page is requested.
+		
+		# Set to cache length time (minutes): 
+			»	Expires header to the current date/time plus the defined 
+			»	Cache-Control header to give a max age for the page 
+		
+		
+	# Use whole request URI for cache key	
+		»	domain.com/ not to cache the same as subdomain.domain.com/ on the same app
+		
+## API
+	# Similar to existing API:
+		
+		cache_action :action, ttl
+		cache_actions [:action, [:action, ttl]]
+		cache_actions [[:action, ttl], [:action, ttl]]
+		
+		expire_action :action
+		expire_actions [:action, :action]
+		
+		cached_action? :action
+	
+	# New thoughts
+	
+		» Specify params wanted within caches (ones that are mapped to your urls!)
+		
+		For example:
+			cache_action :action, ttl, [:username, :permalink]
+			
+		Therefore, then the posts controller is hit with a route to /benschwarz/think-about-caches (":username/:permalink")
+		
