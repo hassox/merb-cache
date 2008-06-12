@@ -13,4 +13,5 @@ end
 
 describe "returned caches" do
   it "should return the format it was stored in"
+  it "should only cache 200 responses"
 end
