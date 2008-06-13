@@ -3,6 +3,8 @@ require File.dirname(__FILE__) + '/spec_helper'
 # Stitch the specs together
 require File.join(File.dirname(__FILE__), 'controller_spec')
 require File.join(File.dirname(__FILE__), 'action_cache_spec')
+require File.join(File.dirname(__FILE__), 'memcached_store_spec')
+require File.join(File.dirname(__FILE__), 'mintcache_store_spec')
 
 # I refuse to spell initialisation with a z, this is me; taking it back for the rest of us.
 describe "merb-cache initialisation" do
