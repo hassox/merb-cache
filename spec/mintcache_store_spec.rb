@@ -1,8 +1,3 @@
-describe "mintcache store" do
-  it "should respond to :get"
-  it "should respond to :put"
-end
-
 describe "mintache store avoiding the dogpile effect" do
   it "should store a second key to keep check of the time" # "#{key}_validity"
   it "should store a third key to keep the data for a longer expiry time" # "#{key}_data"

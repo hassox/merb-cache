@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/spec_helper'
 # Stitch the specs together
 require File.join(File.dirname(__FILE__), 'controller_spec')
 require File.join(File.dirname(__FILE__), 'action_cache_spec')
-require File.join(File.dirname(__FILE__), 'memcached_store_spec')
 require File.join(File.dirname(__FILE__), 'mintcache_store_spec')
 
 # I refuse to spell initialisation with a z, this is me; taking it back for the rest of us.
@@ -16,4 +15,9 @@ end
 describe "returned caches" do
   it "should return the format it was stored in"
   it "should only cache 200 responses"
+end
+
+describe "cache stores" do
+  it "should respond to :get"
+  it "should respond to :put"
 end
