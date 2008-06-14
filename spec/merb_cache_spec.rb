@@ -12,7 +12,8 @@ describe "merb-cache initialisation" do
     @cache.config[:store].should eql "memcached"
   end
   it "should error when an incorrect configuation value is mapped to the cache store"
-  it "should throw Merb::Cache:Store::NotFound for named cache stores that do not exist"
+  it "should raise Merb::Cache:Store::NotFound for named cache stores that do not exist"
+  it "should raise Merb::Cache::Store::BadConfiguration when a invalid config is used"
 end
 
 describe "returned caches" do
