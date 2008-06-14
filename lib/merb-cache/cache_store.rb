@@ -33,4 +33,8 @@ class Merb::Cache::Store
   rescue LoadError
     raise NotFound, @config[:store]
   end
+  
+  #def valid_config?
+    #@config.flatten.include? Merb::Cache.const_get(@config[:store].capitalize + "Store")::VALID_CONFIG_OPTIONS
+  #end
 end
