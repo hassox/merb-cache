@@ -7,7 +7,10 @@ require File.join(File.dirname(__FILE__), 'mintcache_store_spec')
 
 # I refuse to spell initialisation with a z, this is me; taking it back for the rest of us.
 describe "merb-cache initialisation" do
-  it "should default to memcached cache store"
+  it "should default to memcached cache store" do
+    @cache = Merb::Cache::Store.new
+    @cache.config[:store].should eql "memcached"
+  end
   it "should error when an incorrect configuation value is mapped to the cache store"
   it "should throw Merb::Cache:Store::NotFound for named cache stores that do not exist"
 end
