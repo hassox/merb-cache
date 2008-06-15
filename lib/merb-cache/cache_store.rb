@@ -1,5 +1,5 @@
 class Merb::Cache::Store
-  attr_reader :store, :config
+  attr_accessor :store, :config
   
   class NotFound < StandardError
     def initialize store_details
@@ -20,8 +20,11 @@ class Merb::Cache::Store
   
   def initialize
     @config = DEFAULT_CONFIG.merge(Merb::Plugins.config[:merb_cache] || {})
-    load unless @config[:disabled]
-    Merb.logger.info "Loaded merb-cache using #{@config[:store]}"
+    unless @config[:disabled]
+      load
+    else
+      Merb.logger.info "Merb cache is disabled"
+    end
   end
   
   private
@@ -29,12 +32,9 @@ class Merb::Cache::Store
   
   def load
     require "merb-cache/cache_stores/#{config[:store]}_store"
-    @store = Merb::Cache.const_get(@config[:store].capitalize + "Store").new
+    @store = Merb::Cache.const_get(@config[:store].capitalize + "Store").new(@config)
+    Merb.logger.debug "Loaded merb-cache using #{@config[:store]}"
   rescue LoadError
     raise NotFound, @config[:store]
   end
-  
-  #def valid_config?
-    #@config.flatten.include? Merb::Cache.const_get(@config[:store].capitalize + "Store")::VALID_CONFIG_OPTIONS
-  #end
 end

@@ -1,3 +1,5 @@
+require File.dirname(__FILE__) + '/spec_helper'
+
 #dispatch_to(Merb::Test::Fixtures::Controllers::DisplayWithStringLocation, :index, {}, :http_accept => "application/json").headers['Location'].should =~ /some_resources/
 
 describe "merb action cache returned headers" do

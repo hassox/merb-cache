@@ -1,3 +1,5 @@
+require File.dirname(__FILE__) + '/spec_helper'
+
 describe CacheSpecController, "controller class methods" do
   it "should respond to cache_action"
   it "should respond to cache_actions"

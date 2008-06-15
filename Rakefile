@@ -55,9 +55,6 @@ namespace :jruby do
 end
 
 task :specs do
-  cwd = Dir.getwd
-  Dir.chdir(File.dirname(__FILE__) + "/spec")
-  system("spec --format specdoc --colour merb_cache_spec.rb")
-  Dir.chdir(cwd)
+  system("spec --format specdoc --colour #{Dir.glob("spec/*_spec.rb").join(" ")}")
 end
 
