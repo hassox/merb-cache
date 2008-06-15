@@ -32,6 +32,6 @@ describe "memcached store" do
   it "should expire a key" do
     @store.get('key').should eql "stored_data"
     @store.expire('key')
-    lambda { @store.get('key') }.should raise_error Memcached::NotFound 
+    @store.get('key').should be_nil
   end
 end

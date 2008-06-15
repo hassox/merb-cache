@@ -18,6 +18,8 @@ class Merb::Cache::MemcachedStore < Merb::Cache::Store
   
   def get key
     @memcache.get key
+  rescue Memcached::NotFound 
+    return nil
   end
   
   def put key, value, expiry
