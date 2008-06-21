@@ -20,11 +20,7 @@ describe "memcached base" do
   end
   
   it "should respond to expire" do
-<<<<<<< HEAD:spec/mintcache_store_spec.rb
-    @store.public_methods.should include("expire")
-=======
     @store.public_methods.should include "expire!"
->>>>>>> bfbcd434aab315f569d05ea884cfdc0cef465425:spec/mintcache_store_spec.rb
   end
   
   it "should store a key" do
@@ -40,13 +36,8 @@ describe "memcached base" do
   end
   
   it "should expire a key" do
-<<<<<<< HEAD:spec/mintcache_store_spec.rb
-    @store.get('key').should eql("stored_data")
-    @store.expire('key')
-=======
     @store.get('key').should eql "stored_data"
     @store.expire!('key')
->>>>>>> bfbcd434aab315f569d05ea884cfdc0cef465425:spec/mintcache_store_spec.rb
     @store.get('key').should be_nil
   end
   
