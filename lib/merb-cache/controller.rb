@@ -66,9 +66,7 @@ end
 # Crack open the controller class and include the cache class and instance methods
 module Merb
   class Controller
-    class << self
-      include Merb::Cache::ControllerClassMethods
-    end
+    extend Merb::Cache::ControllerClassMethods
     include Merb::Cache::ControllerInstanceMethods
   end
 end

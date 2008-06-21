@@ -24,7 +24,6 @@ describe "proxy to cache engine" do
   it "should set validity in minutes" do
     @cache.put("c-key", "data", 1)
     sleep 1 # Seconds
-    puts Merb::Cache.active_stores.inspect
     @cache.cached?("c-key").should be_true
   end
   

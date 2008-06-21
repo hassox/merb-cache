@@ -88,12 +88,15 @@ module Merb
       def get(key, store = :default)
         raise NotImplmented
       end
+      
       def put(key, data, expiry, store = :default)
         raise NotImplmented
       end
+      
       def cached?(key, store = :default)
         raise NotImplmented
       end
+      
       def expire!(key, store = :default)
         raise NotImplmented
       end
