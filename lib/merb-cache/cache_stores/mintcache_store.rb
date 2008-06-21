@@ -20,21 +20,21 @@ module Merb
         connect
       end
   
-      def get(key)
-        data = @memcache.get key
-        if data.nil?
-          mint_cache = @memcached.get_multi "#{key}_validity", "#{key}_data"
-          validity_time, data = mint_cache["#{key}_validity"], mint_cache["#{key}_data"]
+    def get(key)
+      begin
+        data = @memcache.get(key)
+      rescue Memcached::NotFound
+        mint_cache = @memcache.get(["#{key}_validity", "#{key}_data"])
+        validity_time, data = mint_cache["#{key}_validity"], mint_cache["#{key}_data"]
       
-          if !validity_time.nil? and Time.now > validity_time
-            Merb.logger.info("stale cache, refreshing")
-            # Cache to be set for 60 seconds while its regenerated for the
-            # poor soul who gets a cache miss
-            @memcache.set key, data, 60
-            data = nil
-          end
+        if !validity_time.nil? and Time.now > validity_time
+          Merb.logger.info("stale cache, refreshing")
+          # Cache to be set for 60 seconds while its regenerated for the
+          # poor soul who gets a cache miss
+          @memcache.set(key, data, 60)
+          data = nil
         end
-    
+      end    
         Merb.logger.info("cache: #{data.nil? ? "miss" : "hit"} (#{key})")
         data
       rescue Memcached::NotFound 
@@ -56,11 +56,15 @@ module Merb
       end
   
       def expire!(key)
-        @memcache.delete key
+        [key, "#{key}_validity", "#{key}_data"].each{|k| @memcache.delete(k) }
       end
   
+      # Still use @memcached because we want to reset the cache
+      # after the first level misses
       def cached?(key)
-        !get(key).nil?
+        !@memcache.get(key).nil?
+      rescue Memcached::NotFound
+        return false
       end
   
       private

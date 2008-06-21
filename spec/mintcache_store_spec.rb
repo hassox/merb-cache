@@ -43,7 +43,7 @@ describe "memcached base" do
   it "should expire a key" do
     @store.get('key').should eql "stored_data"
     @store.expire!('key')
-    @store.get('key').should be_nil
+    @store.cached?('key').should be_false
   end
   
   it "should know when there isn't a cache" do
@@ -52,9 +52,45 @@ describe "memcached base" do
 end
 
 describe "mintache store avoiding the dogpile effect" do
-  it "should store a second key to keep check of the time" # "#{key}_validity"
-  it "should store a third key to keep the data for a longer expiry time" # "#{key}_data"
-  it "should use the second and third keys to return the data if the first key has expired"
-  it "should return a cache miss when the second level cache is used"
-  it "should set a temporary cache when the second level cache is used"
+  before :all do
+    @store = Merb::Cache::MintcachedStore.new({:host => "127.0.0.1:11211"})
+  end
+  
+  it "should store a second key to keep check of the time" do
+    @store.put("key", "data", 10)
+    @store.get("key_validity").should_not be_nil
+  end
+  
+  it "should store the validity key for double the amount of time of the initial expiry" do
+    pending "Need a brain to write this"
+    @store.put("expiry_key_spec", "data", 1)
+    expiry_time = @store.get("expiry_key_spec_validity")
+    (expiry_time).should eql "120"
+  end
+  
+  it "should store a third key to keep the data for a longer expiry time" do
+    @store.put("key", "data", 10)
+    @store.get("key_data").should_not be_nil
+  end
+  
+  it "should return a cache miss when the second level cache is used" do
+    @store.put("short_key", "data", 1)
+    sleep 1
+    @store.cached?("short_key").should be_false
+  end
+  
+  it "should store a backup key to avoid cache misses" do
+    @store.put("short_key", "data", 1)
+    sleep 1
+    @store.get("short_key").should be_nil
+    @store.get("short_key").should eql "data"
+  end
+  
+  it "should expire all additional keys when expire is called" do
+    @store.put("key", "data", 1)
+    @store.expire!("key")
+    @store.get("key").should be_nil
+    @store.get("key_validity").should be_nil
+    @store.get("key_data").should be_nil
+  end
 end
