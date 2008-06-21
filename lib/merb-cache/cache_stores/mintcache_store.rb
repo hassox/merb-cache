@@ -13,12 +13,12 @@ class Merb::Cache::MintcachedStore < Merb::Cache::Store
     end
   end
   
-  def initialize config
+  def initialize(config)
     @config = config
     connect
   end
   
-  def get key
+  def get(key)
     data = @memcache.get key
     if data.nil?
       mint_cache = @memcached.get_multi "#{key}_validity", "#{key}_data"
@@ -39,7 +39,7 @@ class Merb::Cache::MintcachedStore < Merb::Cache::Store
     return nil
   end
   
-  def put key, value, expiry =  nil
+  def put (key, value, expiry =  nil)
     # Regular cache set
     expiry = expiry ? expiry : 0
     @memcache.set key, value, expiry
@@ -53,11 +53,11 @@ class Merb::Cache::MintcachedStore < Merb::Cache::Store
     @memcache.set("#{key}_data", value, validity_expiry)
   end
   
-  def expire key
+  def expire!(key)
     @memcache.delete key
   end
   
-  def cached? key
+  def cached?(key)
     !get(key).nil?
   end
   

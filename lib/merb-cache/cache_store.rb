@@ -27,13 +27,27 @@ class Merb::Cache::Store
     end
   end
   
-  # get
-    # Merb.logger.info("cache: hit miss (#{key})")
-  # set
-    # Merb.logger.info("cache: set (#{key})")
+  # Get from cache stores
+  # Cache stores will all return data or nil
+  def get(key)
+    cached_data = @store.get(key)
+    Merb.logger.info("cache: #{(cached_data.nil?) ? "miss" : "true" }  (#{key})")
+    return cached_data 
+  end
+
+  # Put, like a HTTP request
+  # Its the web kids
+  def put(key, data, expiry)
+    @store.put(key, data, expiry)
+    Merb.logger.info("cache: set (#{key})")
+  end
   
-  def cached? key
+  def cached?(key)
     @store.cached?(key)
+  end
+  
+  def expire!(key)
+    @store.expire!(key)
   end
   
   private

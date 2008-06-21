@@ -28,8 +28,8 @@ class Merb::Cache::MemcachedStore < Merb::Cache::Store
     @memcache.set(key, value, expiry)
   end
   
-  def expire(key)
-    @memcache.delete(key)
+  def expire!(key)
+    @memcache.delete key
   end
   
   def cached?(key)

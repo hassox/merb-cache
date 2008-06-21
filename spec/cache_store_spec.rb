@@ -12,8 +12,12 @@ describe "proxy to cache engine" do
   end
   
   it "should know when a cache exists" do
-    @cache.cache_exists?("a-key").should be_true
-    @cache.cache_exists?("b-key").should_not be_true
+    @cache.cached?("a-key").should be_true
+    @cache.cached?("b-key").should_not be_true
+  end
+  
+  it "should expire a cache" do
+    @cache.expire!("a-key")
   end
 end
 
