@@ -53,9 +53,7 @@ module Merb
       end
     end
     
-    class Store
-      include ControllerInstanceMethods
-      
+    class Store      
       attr_accessor :config
   
       class NotFound < StandardError
@@ -85,6 +83,19 @@ module Merb
           :store => :memcached,
           :host => "127.0.0.1:11211"
         }.freeze
+      end
+      
+      def get(key, store = :default)
+        raise NotImplmented
+      end
+      def put(key, data, expiry, store = :default)
+        raise NotImplmented
+      end
+      def cached?(key, store = :default)
+        raise NotImplmented
+      end
+      def expire!(key, store = :default)
+        raise NotImplmented
       end
   
     end # Store
