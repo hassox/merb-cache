@@ -7,7 +7,7 @@ describe "memcached store" do
   end
   
   it "should respond to connect" do
-    @store.private_methods.should include("connect")
+    @store.private_methods.should include("connect!")
   end
   
   it "should respond to put" do

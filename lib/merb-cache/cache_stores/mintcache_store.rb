@@ -1,20 +1,20 @@
 class Merb::Cache::MintcachedStore < Merb::Cache::Store
   
-  def self.valid_config_example
-    @valid_config_example ||= {
-      :store => "memcached",
-      :host => "127.0.0.1:11211"
-    }
-  end
-  
   class NoClient < StandardError
     def initialize
       super "No ruby memcached client was available"
     end
   end
   
+  def self.default_config
+    @default_config ||= {
+      :store => "memcached",
+      :host => "127.0.0.1:11211"
+    }.freeze
+  end
+  
   def initialize(config)
-    @config = config
+    @config = self.class.default_config.merge(config)
     connect
   end
   

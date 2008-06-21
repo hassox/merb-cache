@@ -13,13 +13,8 @@ class Merb::Cache::Store
     end
   end
   
-  DEFAULT_CONFIG = {
-    :store => "memcached",
-    :host => "127.0.0.1:11211"
-  }.freeze
-  
-  def initialize
-    @config = DEFAULT_CONFIG.merge(Merb::Plugins.config[:merb_cache] || {})
+  def initialize(options = {})
+    @config = self.class.default_config.merge(Merb::Plugins.config[:merb_cache] || {})
     unless @config[:disabled]
       load
     else
@@ -50,6 +45,13 @@ class Merb::Cache::Store
     @store.expire!(key)
   end
   
+  def self.default_config
+    @default_config ||= {
+      :store => "memcached",
+      :host => "127.0.0.1:11211"
+    }.freeze
+  end
+  
   private
   # Require the cache store
   
@@ -60,4 +62,5 @@ class Merb::Cache::Store
   rescue LoadError
     raise NotFound, @config[:store]
   end
+  
 end
