@@ -33,6 +33,7 @@ class Merb::Cache::Store
   # Put, like a HTTP request
   # Its the web kids
   def put(key, data, expiry)
+    expiry = expiry * 60 # expiry = 1 becomes 60
     @store.put(key, data, expiry)
     Merb.logger.info("cache: set (#{key})")
   end

@@ -19,6 +19,12 @@ describe "proxy to cache engine" do
   it "should expire a cache" do
     @cache.expire!("a-key")
   end
+  
+  it "should set validity in minutes" do
+    @cache.put("c-key", "data", 1)
+    sleep 2 # Seconds
+    @cache.cached?("c-key").should be_true
+  end
 end
 
 describe "store keys" do
