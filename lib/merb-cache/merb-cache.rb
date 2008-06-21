@@ -2,8 +2,10 @@
 require 'merb-cache/controller'
 require 'merb-cache/cache_store'
 
-# Namespace
-class Merb::Cache; end
+path = File.expand_path(File.join(File.dirname(__FILE__)))
+Merb::Cache.register(:memcached, :path => (path / "cache_stores" / "memcached_store"), :class_name => "MemcachedStore")
+Merb::Cache.register(:mintcache, :path => (path / "cache_stores" / "mintcache_store"), :class_name => "MintcachedStore")
+
 
 Merb::BootLoader.before_app_loads do
   # require code that must be loaded before the application

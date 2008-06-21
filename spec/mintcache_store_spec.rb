@@ -4,7 +4,12 @@ require File.join(File.dirname(__FILE__), '..', 'lib', 'merb-cache', 'cache_stor
 
 describe "memcached base" do
   before :all do
-    @store = Merb::Cache::MintcachedStore.new({:host => "127.0.0.1:11211"})
+    Merb::Cache.setup(:mintcache, :mintcache, :host => "127.0.0.1:11211" )
+    @store = Merb::Cache[:mintcache]
+  end
+  
+  after :all do
+    Merb::Cache.active_stores.delete(:mintcache)
   end
   
   it "should respond to connect" do

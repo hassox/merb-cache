@@ -1,1 +1,1 @@
-class CacheSpecController < Merb::Controller; end
+class CacheSpecController < Merb::Controller;  end

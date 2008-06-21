@@ -1,6 +1,7 @@
 describe "proxy to cache engine" do
   before :all do
-    @cache = Merb::Cache::Store.new
+    Merb::Cache::Store.new
+    @cache = CacheSpecController.new({})
   end
   
   it "should put a cache" do
@@ -22,9 +23,37 @@ describe "proxy to cache engine" do
   
   it "should set validity in minutes" do
     @cache.put("c-key", "data", 1)
-    sleep 2 # Seconds
+    sleep 1 # Seconds
+    puts Merb::Cache.active_stores.inspect
     @cache.cached?("c-key").should be_true
   end
+  
+  it "should allow a cache store to register itself" do
+    file = File.expand_path(File.dirname(__FILE__) / ".." / "lib" / "merb-cache" / "cache_stores", "memcached_store" )
+    Merb::Cache.register(:tester, :path => file, :class_name => "MemcachedStore")   
+  end
+
+  it "should raise an error if there is no path and class_name present" do
+    lambda do
+      Merb::Cache.register(:memcached, {})
+    end.should raise_error(ArgumentError)
+  end
+  
+  it "should get the default cache" do
+    Merb::Cache[:default].should be_a_kind_of(Merb::Cache::Store)    
+  end
+  
+  it "should get a custom cache" do
+    Merb::Cache.setup(:custom, :memcached)
+    Merb::Cache[:custom].should be_a_kind_of(Merb::Cache::MemcachedStore)
+  end
+  
+  it "should not allow you to register a store if the file does not exist" do
+    pending
+    Merb::Cache.register(:custom_store, "does/not/exist")
+    Merb::Cache[:custom_store].should be_nil
+  end
+  
 end
 
 describe "store keys" do
