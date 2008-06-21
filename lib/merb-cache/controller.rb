@@ -1,4 +1,4 @@
-class Merb::Cache
+module Merb::Cache
   module ControllerClassMethods
     
     def cache_action(action)
