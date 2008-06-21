@@ -53,6 +53,18 @@ describe "proxy to cache engine" do
     Merb::Cache[:custom_store].should be_nil
   end
   
+  it "should setup multiple stores" do
+    pending "Write it man you lazy bugger"
+  end
+  
+  it "should return the registered_stores" do
+    pending "Write it you lazy bugger"
+  end
+  
+  it "should return the active_stores" do
+    pending "Write it you lazy bugger"    
+  end
+  
 end
 
 describe "store keys" do
