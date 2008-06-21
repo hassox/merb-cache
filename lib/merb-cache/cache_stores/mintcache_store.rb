@@ -54,7 +54,11 @@ class Merb::Cache::MintcachedStore < Merb::Cache::Store
   def expire key
     @memcache.delete key
   end
-    
+  
+  def cached? key
+    !get(key).nil?
+  end
+  
   private
   def connect
     @memcache = Memcached.new(@config[:host])

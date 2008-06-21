@@ -41,6 +41,6 @@ describe "memcached store" do
   end
   
   it "should know when there isn't a cache" do
-    @store.cached?("key").should be_nil
+    @store.cached?('key').should be_false
   end
 end
