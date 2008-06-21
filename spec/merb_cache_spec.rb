@@ -14,13 +14,15 @@ describe "merb-cache initialisation" do
     lambda { Merb::Cache::Store.new }.should raise_error(Merb::Cache::Store::NotFound)
   end
   
-  it "should raise Merb::Cache::Store::BadConfiguration when a invalid config is used" # do
-   #    Merb::Plugins.config[:merb_cache] = {
-   #      :fail => 'badconfigoptions'
-   #    }
-   #    lambda { Merb::Cache::Store.new }.should raise_error Merb::Cache::Store::BadConfiguration
-   #  end
+  it "should merge the default options when the default options are missing" do
+    Merb::Plugins.config[:merb_cache] = {
+      :fail => 'badconfigoptions'
+    }
+    
+    
+  end
 end
+
 
 describe "returned caches" do
   it "should return the format it was stored in"
