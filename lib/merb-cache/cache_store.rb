@@ -27,6 +27,15 @@ class Merb::Cache::Store
     end
   end
   
+  # get
+    # Merb.logger.info("cache: hit miss (#{key})")
+  # set
+    # Merb.logger.info("cache: set (#{key})")
+  
+  def cached? key
+    @store.cached?(key)
+  end
+  
   private
   # Require the cache store
   

@@ -26,8 +26,3 @@ describe "returned caches" do
   it "should return the format it was stored in"
   it "should only cache 200 responses"
 end
-
-describe "cache stores" do
-  it "should respond to :get"
-  it "should respond to :put"
-end
