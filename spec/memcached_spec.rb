@@ -19,7 +19,7 @@ describe "memcached store" do
   end
   
   it "should respond to expire" do
-    @store.public_methods.should include "expire"
+    @store.public_methods.should include "expire!"
   end
   
   it "should store a key" do
@@ -36,7 +36,7 @@ describe "memcached store" do
   
   it "should expire a key" do
     @store.get('key').should eql "stored_data"
-    @store.expire('key')
+    @store.expire!('key')
     @store.get('key').should be_nil
   end
   

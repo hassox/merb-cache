@@ -46,6 +46,10 @@ class Merb::Cache::Store
     @store.cached?(key)
   end
   
+  def expire!(key)
+    @store.expire!(key)
+  end
+  
   private
   # Require the cache store
   

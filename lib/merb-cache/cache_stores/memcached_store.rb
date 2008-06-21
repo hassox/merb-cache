@@ -16,21 +16,21 @@ class Merb::Cache::MemcachedStore < Merb::Cache::Store
     connect
   end
   
-  def get key
+  def get(key)
     @memcache.get key
   rescue
     return nil
   end
   
-  def put key, value, expiry
+  def put(key, value, expiry)
     @memcache.set key, value, expiry
   end
   
-  def expire key
+  def expire!(key)
     @memcache.delete key
   end
   
-  def cached? key
+  def cached?(key)
     !get(key).nil?
   end
     

@@ -15,6 +15,10 @@ describe "proxy to cache engine" do
     @cache.cached?("a-key").should be_true
     @cache.cached?("b-key").should_not be_true
   end
+  
+  it "should expire a cache" do
+    @cache.expire!("a-key")
+  end
 end
 
 describe "store keys" do
