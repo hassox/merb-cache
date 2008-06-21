@@ -8,19 +8,19 @@ describe "memcached base" do
   end
   
   it "should respond to connect" do
-    @store.private_methods.should include "connect"
+    @store.private_methods.should include("connect")
   end
   
   it "should respond to put" do
-    @store.public_methods.should include "put"
+    @store.public_methods.should include("put")
   end
   
   it "should respond to get" do
-    @store.public_methods.should include "get"
+    @store.public_methods.should include("get")
   end
   
   it "should respond to expire" do
-    @store.public_methods.should include "expire"
+    @store.public_methods.should include("expire")
   end
   
   it "should store a key" do
@@ -28,7 +28,7 @@ describe "memcached base" do
   end
   
   it "should get a key" do
-    @store.get('key').should eql "stored_data"
+    @store.get('key').should eql("stored_data")
   end
   
   it "should know if theres a cache" do
@@ -36,7 +36,7 @@ describe "memcached base" do
   end
   
   it "should expire a key" do
-    @store.get('key').should eql "stored_data"
+    @store.get('key').should eql("stored_data")
     @store.expire('key')
     @store.get('key').should be_nil
   end

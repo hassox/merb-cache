@@ -1,9 +1,11 @@
 class Merb::Cache::MintcachedStore < Merb::Cache::Store
   
-  VALID_CONFIG_EXAMPLE = {
-    :store => "memcached",
-    :host => "127.0.0.1:11211"
-  }
+  def self.valid_config_example
+    @valid_config_example ||= {
+      :store => "memcached",
+      :host => "127.0.0.1:11211"
+    }
+  end
   
   class NoClient < StandardError
     def initialize

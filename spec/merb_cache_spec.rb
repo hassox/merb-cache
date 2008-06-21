@@ -4,14 +4,14 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe "merb-cache initialisation" do
   it "should default to memcached cache store" do
     @cache = Merb::Cache::Store.new
-    @cache.config[:store].should eql "memcached"
+    @cache.config[:store].should eql("memcached")
   end
   
   it "should raise Merb::Cache:Store::NotFound for named cache stores that do not exist" do
     Merb::Plugins.config[:merb_cache] = {
       :store => 'fail'
     }
-    lambda { Merb::Cache::Store.new }.should raise_error Merb::Cache::Store::NotFound
+    lambda { Merb::Cache::Store.new }.should raise_error(Merb::Cache::Store::NotFound)
   end
   
   it "should raise Merb::Cache::Store::BadConfiguration when a invalid config is used" # do

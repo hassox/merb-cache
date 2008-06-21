@@ -1,9 +1,11 @@
 class Merb::Cache::MemcachedStore < Merb::Cache::Store
   
-  VALID_CONFIG_EXAMPLE = {
-    :store => "memcached",
-    :host => "127.0.0.1:11211"
-  }
+  def self.valid_config_example
+    @valid_config_example ||= {
+      :store => "memcached",
+      :host => "127.0.0.1:11211"
+    }
+  end
   
   class NoClient < StandardError
     def initialize
@@ -23,11 +25,11 @@ class Merb::Cache::MemcachedStore < Merb::Cache::Store
   end
   
   def put(key, value, expiry)
-    @memcache.set key, value, expiry
+    @memcache.set(key, value, expiry)
   end
   
   def expire(key)
-    @memcache.delete key
+    @memcache.delete(key)
   end
   
   def cached?(key)

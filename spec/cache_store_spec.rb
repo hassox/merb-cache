@@ -8,7 +8,7 @@ describe "proxy to cache engine" do
   end
   
   it "should get a cache" do
-    @cache.get("a-key").should eql "some data"
+    @cache.get("a-key").should eql("some data")
   end
   
   it "should know when a cache exists" do
