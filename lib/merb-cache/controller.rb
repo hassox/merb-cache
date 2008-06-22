@@ -2,17 +2,51 @@ module Merb
   module Cache
     module ControllerClassMethods
     
-      def cache_action(action)
-        raise NotImplmented
-  #      Merb::Cache::Store.put(Merb::Cache.key_for(action)) unless cached_action?(action)
+      def cache_action(action, options = {}, &block)
+        # Get the filter options
+        opts = {}
+        [:exclude, :only, :with].each{ |k| r = options.delete(k); opts.merge!(r) if r}
+        
+        # setup the options for the before_filter
+        opts.delete(:exclude)
+        opts[:only] = action
+        
+        _add_action_cache(action, options, &block)
+        
+        # Setup a before filter 
+        b = Proc.new do
+          _fetch_action_cache(options)
+        end
+        a = Proc.new do
+          _set_action_cache(options)
+        end
+        before  nil, opts, &b
+        after   nil, opts, &a
       end
     
       # Pure convenience
-      def cache_actions(actions)
-        raise NotImplmented
-        # actions.each do |action|
-        #   action.expire_action(action)
-        # end
+      def cache_actions(*args, &block)
+        options = args.pop if Hash === args.last
+        options ||= {}
+        opts = {}
+        [:exclude, :only, :with].each{ |k| r = options.delete(k); opts.merge!(r) if r}
+        
+        if args.empty?
+          unless opts[:exclude]
+            args = self.callable_actions
+            opts[:only] = args.flatten
+          end
+        end
+      
+        # Setup a before filter and after filter
+        b = Proc.new do
+          _fetch_action_cache(options)
+        end
+        a = Proc.new do
+          _set_action_cache(options)
+        end
+        before  nil, opts, &b
+        after   nil, opts, &a
       end
     
       def cached_action?(action)
@@ -32,7 +66,16 @@ module Merb
         # end
       end
       
-      # The default path for the controller
+      # A place to store the cached actions
+      def _action_caches
+        @_action_caches ||= Hash.new{|h,k| h[k] = {}}
+      end
+      
+      private
+      def _add_action_cache(action, options, &proc)
+        self._action_caches[action][:options] = options
+        self._action_caches[action][:proc]    = proc
+      end
     end
   
     module ControllerInstanceMethods
@@ -60,7 +103,28 @@ module Merb
       def expire!(key, store = :default)
         Merb::Cache[store].expire!(key)
       end
-    
+      
+      def expire_action
+        raise NotImplmented
+      end
+      
+      def expire_actions
+        raise NotImplmented
+      end
+      
+      def cached_action?
+        raise NotImplmented
+      end
+      
+      private 
+      def _fetch_action_cache(opts = {})
+        
+      end
+      
+      def _set_action_cache(opts = {})
+        
+      end
+      
     end
   end
 end

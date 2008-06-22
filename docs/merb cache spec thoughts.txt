@@ -34,15 +34,93 @@
 		
 ## API
 	# Similar to existing API:
+	  # Actions should only cache on get requests
 		
-		cache_action :action, ttl
+		# CLASS
+		cache_action :action, ttl, :key_params => [:id, :username]
+		
 		cache_actions [:action, [:action, ttl]]
 		cache_actions [[:action, ttl], [:action, ttl]]
+		cache_actions :exclude => [:index, :show] 
 		
-		expire_action :action
-		expire_actions [:action, :action]
 		
-		cached_action? :action
+		################  EXAMPLE CLASS LEVEL CALLS
+		cache_page :index
+		
+		cache_actions :expire_in => <seconds>
+ 		
+		cache_action(:show, :store => :my_memcached_store) do |controller|
+		  expire_in   <seconds>
+		  keys = [:year, :month, :day, :name]
+      
+      if controller.current_user.is_admin?
+        base_key "path/to/admin_area"
+        keys.unshift(controller.current_user.id) # Need another array for the SHA
+        key_params keys
+      else
+		    key_params keys
+		  end		  
+		end
+		
+		cache_actions :create, :update do |controller|
+		  force_action_cache(controller, :show, :year => 2007, :month => 3, :day => 5)
+		  force_action_cache(controller, :index)
+		  force_fragment_cache(:some => "key")
+		  do_not_cache_this_action!
+		  # Need a way to tell force_action_cache that the action was successful
+		end
+		
+		cache_action :edit, :expire_in => <seconds>
+		
+		################## END EXAMPLE
+		
+		Use a Merb::Cache::Proxy object to calculate the base key, params_key, and id_key or get the default
+		Stick it into run method where we setup a 
+		
+		
+		setup before :run_cache with whatever options are required
+		opts
+		p = Proc.new{ _run_cache(opts)  }
+		before :only => [:show, :index] &p
+		
+		def _run_cache(opts)
+		  CacheProxy.new(opts).run!(&(self.class._cache_store[action_name]))
+		end
+		
+		Where run! yields to the given block
+		
+		CacheProxy should be able to read a cache param to force the cache.
+		
+		
+		cache_actions :exclude => [:create, :delete, :update] do
+		  
+		end
+		
+		# INSTANCE METHODS
+  		expire_action   :action
+  		expire_actions [:action, :action]
+  		cached? :action
+  		cached? "key"
+  		expire! "key"
+  
+  
+  # Should only be get requests that are cached.  So URL should identify the params
+  
+  # Default Keys
+  
+  # Page Cache
+    page cache key = Match the URL path with <action>.<format>   !!!ALWAYS!!!
+    
+  # Action Cache
+    cache_action :action do 
+      action_cache_key(:some => "additional", :param => "keys")
+    end
+    fragment_key_base + params_key( which is URL path) + id_keys as hash .format
+    
+  # Fragment Cache
+    cache_fragment(  
+    fragment_cache_key = fragment_key_base + params_key + id_key
+
 	
 	# New thoughts
 	
