@@ -33,6 +33,13 @@ module Merb
         load_store(store)
         @active_stores[name] = self.const_get(registered_stores[store.to_sym][:class_name]).new(opts)
       end
+      
+      # Removes an active cache store
+      # name<Symbol> : A label fot the cache store
+      # Returns<Nil CacheStore>
+      def remove_active_cache!(name)
+        @active_stores.delete(name)
+      end
   
       # === Returns
       # A Hash of registered store types

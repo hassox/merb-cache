@@ -59,23 +59,36 @@ describe "proxy to cache engine" do
     end.should raise_error(Merb::Cache::Store::NotFound)
   end
   
+  it "should remove active stores" do
+    Merb::Cache.setup(:custom_store1, :mintcache)
+    Merb::Cache[:custom_store1].should_not be_nil
+    Merb::Cache.remove_active_cache!(:custom_store1).should be_a_kind_of(Merb::Cache::MintcachedStore)
+    lambda do
+      Merb::Cache[:custom_store1]
+    end.should raise_error(Merb::Cache::Store::NotFound)
+  end
+  
   it "should setup multiple stores" do
     Merb::Cache.setup(:custom_store1, :memcached)
     Merb::Cache.setup(:custom_store2, :mintcache)
     Merb::Cache[:custom_store1].should be_a_kind_of(Merb::Cache::MemcachedStore)
     Merb::Cache[:custom_store2].should be_a_kind_of(Merb::Cache::MintcachedStore)
+    Merb::Cache.remove_active_cache!(:custom_store1)
+    Merb::Cache.remove_active_cache!(:custom_store2)
   end
+  
+
   
   it "should return the registered_stores" do
     Merb::Cache.registered_stores.keys.should include(:memcached, :mintcache)
     Merb::Cache.registered_stores[:memcached].keys.should include(:path, :class_name)
     Merb::Cache.registered_stores[:mintcache].keys.should include(:path, :class_name)
   end
-  
 
-  
   it "should return the active_stores" do
-    pending "Write it you lazy bugger"    
+    Merb::Cache.setup(:my_store, :memcached)
+    Merb::Cache.send(:active_stores).keys.should include(:my_store)
+    Merb::Cache.remove_active_cache!(:my_store)
   end
   
 end
