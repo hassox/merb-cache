@@ -35,7 +35,13 @@ describe "merb-cache initialisation" do
     obj = Merb::Cache[:default]
     Merb::Cache.setup_default
     Merb::Cache[:default].should equal(obj)
-    
+  end
+  
+  it "should overwrite the existing cache with the ! version" do
+    Merb::Cache.setup_default
+    obj = Merb::Cache[:default]    
+    Merb::Cache.setup_default!
+    Merb::Cache[:default].should_not equal(obj)
   end
   
   
