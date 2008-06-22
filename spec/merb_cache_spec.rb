@@ -30,6 +30,14 @@ describe "merb-cache initialisation" do
     Merb::Cache[:default].should be_a_kind_of(Merb::Cache::Store)    
   end
   
+  it "should not overwrite the existing object" do
+    Merb::Cache.setup_default
+    id = Merb::Cache[:default].object_id
+    Merb::Cache.setup_default
+    Merb::Cache[:default].object_id.should == id
+    
+  end
+  
   
 end
 
