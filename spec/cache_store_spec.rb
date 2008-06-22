@@ -51,16 +51,28 @@ describe "proxy to cache engine" do
     lambda do
       Merb::Cache.register(:custom_store, :path => "does/not/exist", :class_name => "NotHere")
     end.should raise_error(Merb::Cache::Store::NotFound)
-    Merb::Cache[:custom_store].should be_nil
+  end
+  
+  it "should raise an error when accessing a cache that does not exist" do
+    lambda do 
+      Merb::Cache[:not_there]
+    end.should raise_error(Merb::Cache::Store::NotFound)
   end
   
   it "should setup multiple stores" do
-    pending "Write it man you lazy bugger"
+    Merb::Cache.setup(:custom_store1, :memcached)
+    Merb::Cache.setup(:custom_store2, :mintcache)
+    Merb::Cache[:custom_store1].should be_a_kind_of(Merb::Cache::MemcachedStore)
+    Merb::Cache[:custom_store2].should be_a_kind_of(Merb::Cache::MintcachedStore)
   end
   
   it "should return the registered_stores" do
-    pending "Write it you lazy bugger"
+    Merb::Cache.registered_stores.keys.should include(:memcached, :mintcache)
+    Merb::Cache.registered_stores[:memcached].keys.should include(:path, :class_name)
+    Merb::Cache.registered_stores[:mintcache].keys.should include(:path, :class_name)
   end
+  
+
   
   it "should return the active_stores" do
     pending "Write it you lazy bugger"    

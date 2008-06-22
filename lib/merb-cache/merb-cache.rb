@@ -7,6 +7,7 @@ module Merb
       # value<Hash> : Requires a hash with to describe the cache.  See Merb::Cache.register
       def [](name)
         active_stores
+        raise Merb::Cache::Store::NotFound, "Could not find the #{name} cache" unless Merb::Cache::Store === @active_stores[name]
         @active_stores[name]
       end
 
