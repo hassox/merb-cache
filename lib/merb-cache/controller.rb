@@ -5,7 +5,7 @@ module Merb
       def cache_action(action, options = {}, &block)
         # Get the filter options
         opts = {}
-        [:exclude, :only, :with].each{ |k| r = options.delete(k); opts.merge!(r) if r}
+        opts = normalize_filters!(opts || {})
         
         # setup the options for the before_filter
         opts.delete(:exclude)
@@ -20,6 +20,8 @@ module Merb
         a = Proc.new do
           _set_action_cache(options)
         end
+        
+        # Using procs so that we can run multiple filters on _fetch_action_cache and _set_action_cache
         before  nil, opts, &b
         after   nil, opts, &a
       end
@@ -28,15 +30,19 @@ module Merb
       def cache_actions(*args, &block)
         options = args.pop if Hash === args.last
         options ||= {}
-        opts = {}
-        [:exclude, :only, :with].each{ |k| r = options.delete(k); opts.merge!(r) if r}
+        opts = normalize_filters!(opts || {})
         
-        if args.empty?
-          unless opts[:exclude]
-            args = self.callable_actions
-            opts[:only] = args.flatten
-          end
+        case opts.keys
+        when include?(:exclude)
+          actions = self.callable_actions - opts[:exclude]        
+        when include?(:only)
+          actions = opts[:only]
+        else
+          actions = args.empty? ? self.callable_actions : args.flatten
         end
+
+        # Setup the cache store on the controller
+        actions.each{|a| _add_action_cache(action.to_sym, options, &block)}
       
         # Setup a before filter and after filter
         b = Proc.new do
@@ -45,6 +51,8 @@ module Merb
         a = Proc.new do
           _set_action_cache(options)
         end
+        
+        # Using procs so that we can run multiple filters on _fetch_action_cache and _set_action_cache
         before  nil, opts, &b
         after   nil, opts, &a
       end
