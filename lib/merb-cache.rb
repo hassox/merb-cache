@@ -17,7 +17,7 @@ if defined?(Merb::Plugins)
   Merb::BootLoader.before_app_loads do
     # code that can be required after the application loads
     # Initialize the cache store if there is not one setup for the default
-    Merb::Cache.setup(:default, :memcached) if Merb::Cache[:default].empty?
+    Merb::Cache.setup_default if Merb::Cache[:default].empty?
   end
 
   Merb::BootLoader.after_app_loads do

@@ -51,6 +51,12 @@ module Merb
       def active_stores
         @active_stores ||= {}
       end
+      
+      # Sets up the default if it's not present
+      def setup_default
+        setup(:default, :memcached)
+      end
+        
   
       protected
       def []=(name,value)

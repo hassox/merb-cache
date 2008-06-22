@@ -20,6 +20,17 @@ describe "merb-cache initialisation" do
     }
     
   end
+  
+  it "should setup the default" do
+    Merb::Cache.remove_active_cache!(:default)
+    lambda do
+      Merb::Cache[:default]
+    end.should raise_error(Merb::Cache::Store::NotFound)
+    Merb::Cache.setup_default
+    Merb::Cache[:default].should be_a_kind_of(Merb::Cache::Store)    
+  end
+  
+  
 end
 
 describe "returned caches" do

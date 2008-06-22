@@ -17,7 +17,7 @@ describe Merb::Cache do
   describe Merb::Cache::ControllerInstanceMethods do
       
     before(:all) do
-      Merb::Cache.setup(:default, :memcached)
+      Merb::Cache.setup_default
       Merb::Cache.setup(:custom_cache, :memcached)
       @controller = CacheSpecController.new({})
       @cache = Merb::Cache[:default]
@@ -93,6 +93,17 @@ describe Merb::Cache do
         @controller.cache_expire!("key", :custom_cache)
       end
     end
+    
+  end
+
+  describe Merb::Cache::ControllerClassMethods do
+    
+    before(:all) do
+      Merb::Cache.setup_default
+      @controller = CacheSpecController.new({})
+    end
+  
+    
     
   end
 end

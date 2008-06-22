@@ -31,6 +31,8 @@ module Merb
         #   action.expire_action(action)
         # end
       end
+      
+      # The default path for the controller
     end
   
     module ControllerInstanceMethods
