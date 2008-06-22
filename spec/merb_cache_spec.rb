@@ -19,7 +19,6 @@ describe "merb-cache initialisation" do
       :fail => 'badconfigoptions'
     }
     
-    
   end
 end
 

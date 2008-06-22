@@ -28,7 +28,7 @@ describe "proxy to cache engine" do
   end
   
   it "should allow a cache store to register itself" do
-    file = File.expand_path(File.dirname(__FILE__) / ".." / "lib" / "merb-cache" / "cache_stores", "memcached_store" )
+    file = File.expand_path(File.dirname(__FILE__) / ".." / "lib" / "merb-cache" / "cache_stores"/ "memcached_store" )
     Merb::Cache.register(:tester, :path => file, :class_name => "MemcachedStore")   
   end
 
@@ -48,8 +48,9 @@ describe "proxy to cache engine" do
   end
   
   it "should not allow you to register a store if the file does not exist" do
-    pending
-    Merb::Cache.register(:custom_store, "does/not/exist")
+    lambda do
+      Merb::Cache.register(:custom_store, :path => "does/not/exist", :class_name => "NotHere")
+    end.should raise_error(Merb::Cache::Store::NotFound)
     Merb::Cache[:custom_store].should be_nil
   end
   
