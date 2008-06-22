@@ -5,26 +5,26 @@ describe "proxy to cache engine" do
   end
   
   it "should put a cache" do
-    @cache.cache_put("a-key", "some data", 10)
+    @cache.put("a-key", "some data", 10)
   end
   
   it "should get a cache" do
-    @cache.cache_get("a-key").should eql("some data")
+    @cache.get("a-key").should eql("some data")
   end
   
   it "should know when a cache exists" do
-    @cache.cache_cached?("a-key").should be_true
-    @cache.cache_cached?("b-key").should_not be_true
+    @cache.cached?("a-key").should be_true
+    @cache.cached?("b-key").should_not be_true
   end
   
   it "should expire a cache" do
-    @cache.cache_expire!("a-key")
+    @cache.expire!("a-key")
   end
   
   it "should set validity in minutes" do
-    @cache.cache_put("c-key", "data", 1)
+    @cache.put("c-key", "data", 1)
     sleep 1 # Seconds
-    @cache.cache_cached?("c-key").should be_true
+    @cache.cached?("c-key").should be_true
   end
   
   it "should allow a cache store to register itself" do

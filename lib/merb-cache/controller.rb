@@ -39,7 +39,7 @@ module Merb
     
       # Get from cache stores
       # Cache stores will all return data or nil
-      def cache_get(key, store = :default)
+      def get(key, store = :default)
         cached_data = Merb::Cache[store].get(key)
         Merb.logger.info("cache: #{(cached_data.nil?) ? "miss" : "true" }  (#{key})")
         return cached_data 
@@ -47,17 +47,17 @@ module Merb
 
       # Put, like a HTTP request
       # Its the web kids
-      def cache_put(key, data, expiry, store = :default)
+      def put(key, data, expiry, store = :default)
         expiry = expiry * 60 # expiry = 1 becomes 60
         Merb::Cache[store].put(key, data, expiry)
         Merb.logger.info("cache: set (#{key})")
       end
 
-      def cache_cached?(key, store = :default)
+      def cached?(key, store = :default)
         Merb::Cache[store].cached?(key)
       end
 
-      def cache_expire!(key, store = :default)
+      def expire!(key, store = :default)
         Merb::Cache[store].expire!(key)
       end
     

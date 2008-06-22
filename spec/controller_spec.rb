@@ -29,68 +29,68 @@ describe Merb::Cache do
       Merb::Cache.remove_active_cache!(:custom_cache)
     end
     
-    describe "cache_get method" do
-      it{ @controller.should respond_to(:cache_get)}
+    describe "get method" do
+      it{ @controller.should respond_to(:get)}
       
       it "should pass the call through to te cache 'get'" do
         @cache.should_receive(:get).with("key").and_return "key"
-        @controller.cache_get("key")      
+        @controller.get("key")      
       end
       
       it "should pass the call through to the custom cache 'get'" do
         @custom_cache.should_receive(:get).with("key").and_return "key"
         @cache.should_not_receive(:get)
-        @controller.cache_get("key", :custom_cache)
+        @controller.get("key", :custom_cache)
       end       
     end
     
-    describe "cache_put method" do
-      it{ @controller.should respond_to(:cache_put)}
+    describe "put method" do
+      it{ @controller.should respond_to(:put)}
       
       it "should pass the put method on to the default cache" do
         @cache.should_receive(:put).with("key", "value", an_instance_of(Integer))
-        @controller.cache_put("key", "value", 1)
+        @controller.put("key", "value", 1)
       end
       
       it "should pass the put method to the custom cache" do
         @custom_cache.should_receive(:put).with("key", "value", an_instance_of(Integer))
-        @controller.cache_put("key", "value", 1, :custom_cache)
+        @controller.put("key", "value", 1, :custom_cache)
       end
       
       it "should cahnge the expiry from minutes to seconds" do
         expiry = mock("expiry")
         expiry.should_receive(:*).with(60).and_return(120)
         @cache.should_receive(:put).with("key", "value", 120)
-        @controller.cache_put("key", "value", expiry)        
+        @controller.put("key", "value", expiry)        
       end
       
     end
     
-    describe "cache_cached? method" do
-      it{ @controller.should respond_to(:cache_cached?) }
+    describe "cached? method" do
+      it{ @controller.should respond_to(:cached?) }
       
       it "should pass the onto the cached? method of the default store" do
         @cache.should_receive(:cached?).with("key").and_return true
-        @controller.cache_cached?("key")
+        @controller.cached?("key")
       end
       
       it "should pass the onto the cached? method of the custom store" do
         @custom_cache.should_receive(:cached?).with("key").and_return true
-        @controller.cache_cached?("key", :custom_cache)
+        @controller.cached?("key", :custom_cache)
       end
     end
     
-    describe "cache_expire! method" do
-      it{ @controller.should respond_to(:cache_expire!)}
+    describe "expire! method" do
+      it{ @controller.should respond_to(:expire!)}
       
       it "should pass the call the default stores expire! method" do
         @cache.should_receive(:expire!).with("key").and_return true
-        @controller.cache_expire!("key")
+        @controller.expire!("key")
       end
       
       it "should pass the call the custom stores expire! method" do
         @custom_cache.should_receive(:expire!).with("key").and_return true
-        @controller.cache_expire!("key", :custom_cache)
+        @controller.expire!("key", :custom_cache)
       end
     end
     
