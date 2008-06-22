@@ -54,7 +54,7 @@ module Merb
       
       # Sets up the default if it's not present
       def setup_default
-        setup(:default, :memcached)
+        setup(:default, :memcached) unless active_stores[:default]
       end
         
   

@@ -32,9 +32,9 @@ describe "merb-cache initialisation" do
   
   it "should not overwrite the existing object" do
     Merb::Cache.setup_default
-    id = Merb::Cache[:default].object_id
+    obj = Merb::Cache[:default]
     Merb::Cache.setup_default
-    Merb::Cache[:default].object_id.should == id
+    Merb::Cache[:default].should equal(obj)
     
   end
   
