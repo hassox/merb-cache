@@ -25,7 +25,7 @@ describe "memcached base" do
   end
   
   it "should respond to expire" do
-    @store.public_methods.should include "expire!"
+    @store.public_methods.should include("expire!")
   end
   
   it "should store a key" do
@@ -62,10 +62,9 @@ describe "mintache store avoiding the dogpile effect" do
   end
   
   it "should store the validity key for double the amount of time of the initial expiry" do
-    pending "Need a brain to write this"
-    @store.put("expiry_key_spec", "data", 1)
-    expiry_time = @store.get("expiry_key_spec_validity")
-    (expiry_time).should eql "120"
+    expiry = Time.now + 60
+    @store.put("expiry_key_spec", "regular cache data", 60)
+    @store.get("expiry_key_spec_validity").to_s.should eql expiry.to_s
   end
   
   it "should store a third key to keep the data for a longer expiry time" do

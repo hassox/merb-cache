@@ -41,16 +41,15 @@ module Merb
         return nil
       end
   
-      def put (key, value, expiry =  nil)
+      def put (key, value, expiry = 0)
         # Regular cache set
-        expiry = expiry ? expiry : 0
         @memcache.set key, value, expiry
     
         # Set the data to a seperate key that has a long expiry.
         # When the cache that is set above expires, this one can 
         # steal the show - unless the data really isn't as hot as you'd 
         # like to think it was – Then you're fucked.
-        validity_expiry = (expiry * 2) * 60
+        validity_expiry = (expiry * 2)
         @memcache.set("#{key}_validity", (Time.now + expiry), validity_expiry)
         @memcache.set("#{key}_data", value, validity_expiry)
       end
