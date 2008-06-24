@@ -48,8 +48,10 @@ describe "Merb::Cache::Controller" do
 
   end
 
-  describe "cache_path" do
-    
+  describe "Merb.cache" do
+    it "should return Merb::Cache with Merb.cache" do
+      Merb.cache.should == Merb::Cache
+    end
   end
 
   describe "returned caches" do

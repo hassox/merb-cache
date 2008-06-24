@@ -43,4 +43,9 @@ describe "memcached store" do
   it "should know when there isn't a cache" do
     @store.cached?('key').should be_false
   end
+  
+  it "should have a default_key_base" do
+    
+  end
+  
 end

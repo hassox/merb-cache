@@ -72,6 +72,10 @@ describe Merb::Cache do
       it "should implement a _fetch_action_cache private method" do
         @klass.private_instance_methods.should include("_fetch_action_cache")
       end
+      
+      it "should call Merb.cache.get('key')" do
+        @klass.send(:cache_action, :show)
+      end
     end
     
     describe "_set_action_cache" do

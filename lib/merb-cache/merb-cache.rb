@@ -1,5 +1,11 @@
 # Require components
 module Merb
+  
+  # A convinient way to get at Merb::Cache
+  def self.cache
+    Merb::Cache
+  end
+  
   module Cache
     class << self
       # Addess to registered stores
@@ -60,6 +66,31 @@ module Merb
       # Sets up the default regardless of if there's already a default cache setup
       def setup_default!
         setup(:default, :memcached)
+      end
+      
+      # Get from cache stores
+      # Cache stores will all return data or nil
+      def get(key, store = :default)
+        cached_data = self[store].get(key)
+        Merb.logger.info("cache: #{(cached_data.nil?) ? "miss" : "true" }  (#{key})")
+        return cached_data 
+      end
+
+      # Put, like a HTTP request
+      # Its the web kids
+      # Defaults to 10 minutes
+      def put(key, data, expiry = 10, store = :default)
+        expiry = expiry * 60 # expiry = 1 becomes 60
+        self[store].put(key, data, expiry)
+        Merb.logger.info("cache: set (#{key})")
+      end
+
+      def cached?(key, store = :default)
+        self[store].cached?(key)
+      end
+
+      def expire!(key, store = :default)
+        self[store].expire!(key)
       end
         
   

@@ -7,7 +7,8 @@ if defined?(Merb::Plugins)
 
   require 'merb-cache/controller'
   require 'merb-cache/cache_store'
-
+  require 'merb-cache/controller_cache_proxy'
+  
   path = File.expand_path(File.join(File.dirname(__FILE__))) /  "merb-cache" / "cache_stores"
   Merb::Cache.register(:memcached, :path => (path / "memcached_store"), :class_name => "MemcachedStore")
   Merb::Cache.register(:mintcache, :path => (path / "mintcache_store"), :class_name => "MintcachedStore")
