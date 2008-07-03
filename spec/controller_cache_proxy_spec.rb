@@ -3,11 +3,11 @@ require File.dirname(__FILE__) + '/spec_helper'
 describe Merb::Cache::ControllerCacheProxy do
   
   before(:each) do
+    Merb.stub!(:root).and_return("MERB_ROOT")
     @controller = CacheSpecController.new({})
     @controller.stub!(:action_name).and_return("index")
     @op = Merb::Cache::ControllerCacheProxy.new( @controller )
     @controller_name = CacheSpecController.name.snake_case
-    Merb.stub!(:root).and_return("MERB_ROOT")
   end
   
   describe "key_base" do
