@@ -44,30 +44,72 @@ describe Merb::Cache do
   end
 
   describe ".read" do
-    it "should call #capture_first on the precedence list" do
-      Merb::Cache.precedence.should_receive(:capture_first)
+    it "should call #read on the result of the cache lookup" do
+      store = mock(:store)
+      store.should_receive(:read)
+      Merb::Cache.should_receive(:[]).with(Merb::Cache.precedence).and_return store
+
       Merb.cache.read(:key)
     end
   end
 
   describe ".write" do
-    it "should call #capture_first on the precedence list" do
-      Merb::Cache.precedence.should_receive(:capture_first)
-      Merb.cache.write(:key, 'value')
+    it "should call #write on the result of the cache lookup" do
+      store = mock(:store)
+      store.should_receive(:write)
+      Merb::Cache.should_receive(:[]).with(Merb::Cache.precedence).and_return store
+
+      Merb.cache.write(:key, :value)
+    end
+  end
+
+  describe ".write_all" do
+    it "should call #write_all on the result of the cache lookup" do
+      store = mock(:store)
+      store.should_receive(:write_all)
+      Merb::Cache.should_receive(:[]).with(Merb::Cache.precedence).and_return store
+
+      Merb.cache.write_all(:key, :value)
     end
   end
 
   describe ".fetch" do
-    it "should call #capture_first on the precedence list" do
-      Merb::Cache.precedence.should_receive(:capture_first)
+    it "should call #fetch on the result of the cache lookup" do
+      store = mock(:store)
+      store.should_receive(:fetch)
+      Merb::Cache.should_receive(:[]).with(Merb::Cache.precedence).and_return store
+
       Merb.cache.fetch(:key) { 'value' } 
     end
   end
 
   describe ".exists?" do
-    it "should call #any? on the precedence list" do
-      Merb::Cache.precedence.should_receive(:any?)
+    it "should call #fetch? on the result of the cache lookup" do
+      store = mock(:store)
+      store.should_receive(:exists?)
+      Merb::Cache.should_receive(:[]).with(Merb::Cache.precedence).and_return store
+
       Merb.cache.exists?(:key)
+    end
+  end
+
+  describe ".delete" do
+    it "should call #delete on the result of the cache lookup" do
+      store = mock(:store)
+      store.should_receive(:delete)
+      Merb::Cache.should_receive(:[]).with(Merb::Cache.precedence).and_return store
+
+      Merb.cache.delete(:key)
+    end
+  end
+
+  describe ".delete_all!" do
+    it "should call #delete_all! on the result of the cache lookup" do
+      store = mock(:store)
+      store.should_receive(:delete_all!)
+      Merb::Cache.should_receive(:[]).with(Merb::Cache.precedence).and_return store
+
+      Merb.cache.delete_all!
     end
   end
 end

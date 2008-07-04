@@ -48,7 +48,7 @@ module Merb
       @precedence << name unless @precedence.include? name
     end
 
-    def default_store_name
+    def self.default_store_name
       :default
     end
 
@@ -61,7 +61,7 @@ module Merb
     end
 
     def self.write_all(key, data = nil, parameters = {}, conditions = {})
-      self[precedence].write()
+      self[precedence].write_all(key, data, parameters, conditions)
     end
 
     def self.fetch(key, parameters = {}, conditions = {}, &blk)
