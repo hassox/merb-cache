@@ -55,6 +55,6 @@ namespace :jruby do
 end
 
 task :specs do
-  system("spec --format specdoc --colour #{Dir.glob("spec/*_spec.rb").join(" ")}")
+  system("spec --format specdoc --colour #{Dir.glob("spec/**/*_spec.rb").join(" ")}")
 end
 

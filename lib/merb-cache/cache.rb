@@ -40,7 +40,7 @@ module Merb
     # opts<Hash> : A hash to pass through to the store for configuration.
     def self.setup(name, klass = nil, opts = {})
       klass, opts = nil, klass if klass.is_a? Hash
-      name, klass = :default, name if klass.nil?
+      name, klass = default_store_name, name if klass.nil?
 
       raise "#{name} store already setup" if @stores.has_key?(name)
 
@@ -48,32 +48,36 @@ module Merb
       @precedence << name unless @precedence.include? name
     end
 
+    def default_store_name
+      :default
+    end
+
     def self.read(key, parameters = {}, conditions = {})
-      precedence.capture_first {|n| self[n].read(key, parameters, conditions)}
+      self[precedence].read(key, parameters, conditions)
     end
 
     def self.write(key, data = nil, parameters = {}, conditions = {})
-      precedence.capture_first {|n| self[n].write(key, parameters, conditions)}
+      self[precedence].write(key, parameters, conditions)
     end
 
     def self.write_all(key, data = nil, parameters = {}, conditions = {})
-      precedence.capture_intersection {|n| self[n].write()}
+      self[precedence].write()
     end
 
     def self.fetch(key, parameters = {}, conditions = {}, &blk)
-      precedence.capture_first {|n| self[n].fetch(key, parameters, conditions, &blk)}
+      self[precedence].fetch(key, parameters, conditions, &blk)
     end
 
     def self.exists?(key, parameters = {})
-      precedence.any?{|n| self[n].exists?(key, parameters)}
+      self[precedence].exists?(key, parameters)
     end
 
     def self.delete(key, parameters = {})
-      precedence.capture_intersection {|n| self[n].delete(key, parameters)}
+      self[precedence].delete(key, parameters)
     end
 
     def self.delete_all!
-      precedence.capture_intersection {|n| self[n].delete_all!}
+      self[precedence].delete_all!
     end
 
     class NotSupportedError < Exception; end

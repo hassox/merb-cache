@@ -1,4 +1,4 @@
-class AbstractStore
+class Merb::Cache::AbstractStore
 
   def initialize(config = {}); end
 
