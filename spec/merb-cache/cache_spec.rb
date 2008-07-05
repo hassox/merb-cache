@@ -41,6 +41,12 @@ describe Merb::Cache do
       Merb::Cache[:default]
       Thread.current[:'merb-cache'].should_not be_nil
     end
+
+    it "should create an adhoc store if multiple store names are supplied" do
+      Merb::Cache.setup(DummyStore)
+      Merb::Cache.setup(:dummy, DummyStore)
+      Merb::Cache[:default, :dummy].class.should == Merb::Cache::AdhocStore
+    end
   end
 
   describe ".read" do
