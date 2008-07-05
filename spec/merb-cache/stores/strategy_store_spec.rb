@@ -1,4 +1,6 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
+require File.dirname(__FILE__) + '/abstract_store_spec'
+
 
 describe Merb::Cache::StrategyStore do
   shared_examples_for 'all strategy stores' do
@@ -47,6 +49,24 @@ describe Merb::Cache::StrategyStore do
         instance.should_receive(:clone)
 
         subclass.new.clone
+      end
+    end
+
+    describe "#write_all" do
+      it "should not raise a NotImplementedError error" do
+        lambda { @store.write_all('foo', 'bar') }.should_not raise_error(NotImplementedError)
+      end
+
+      it "should accept a string key" do
+        @store.write_all('foo', 'bar')
+      end
+
+      it "should accept a symbol as a key" do
+        @store.write_all(:foo, :bar)
+      end
+
+      it "should accept parameters and conditions" do
+        @store.write_all('foo', 'bar', {:params => :hash}, :conditions => :hash)
       end
     end
   end

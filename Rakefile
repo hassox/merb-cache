@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake/gempackagetask'
 require 'rubygems/specification'
 require 'date'
-# require '../merb_rake_helper'
+require "spec/rake/spectask"
 
 PLUGIN = "merb-cache"
 NAME = "merb-cache"
@@ -54,7 +54,12 @@ namespace :jruby do
 
 end
 
-task :specs do
-  system("spec --format specdoc --colour #{Dir.glob("spec/**/*_spec.rb").join(" ")}")
+desc "Run all specs"
+Spec::Rake::SpecTask.new("specs") do |t|
+  t.spec_opts = ["--format", "specdoc", "--colour"]
+  t.spec_files = Dir["spec/**/*_spec.rb"].sort
+  t.rcov = true
+  t.rcov_opts << '--sort' << 'coverage' << '--sort-reverse'
+  t.rcov_opts << '--only-uncovered'
 end
 

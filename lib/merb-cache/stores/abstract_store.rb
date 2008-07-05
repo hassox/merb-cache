@@ -21,7 +21,9 @@ class Merb::Cache::AbstractStore
     raise NotImplementedError
   end
 
-  alias_method :write_all, :write
+  def write_all(key, data = nil, parameters = {}, conditions = {})
+    write(key, data, parameters, conditions)
+  end
 
   # tries to read the data from the store.  If that fails, it calls
   # the block parameter and persists the result.
@@ -45,5 +47,7 @@ class Merb::Cache::AbstractStore
     raise NotImplementedError
   end
 
-  alias_method :delete_all!, :delete_all
+  def delete_all!
+    delete_all
+  end
 end
