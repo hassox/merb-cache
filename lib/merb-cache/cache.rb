@@ -9,6 +9,7 @@ module Merb
     # adding the require statement in the store file.
     autoload :AbstractStore,    "merb-cache" / "stores" / "abstract_store"
     autoload :AdhocStore,       "merb-cache" / "stores" / "adhoc_store"
+    autoload :FileStore,        "merb-cache" / "stores" / "file_store"
     autoload :StrategyStore,    "merb-cache" / "stores" / "strategy_store"
     
     class << self
