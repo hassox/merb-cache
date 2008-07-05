@@ -63,3 +63,28 @@ Spec::Rake::SpecTask.new("specs") do |t|
   t.rcov_opts << '--only-uncovered'
 end
 
+##############################################################################
+# memcached
+##############################################################################
+MEMCACHED_PORTS = 43042..43043
+
+namespace :memcached do
+  desc "Start the memcached instances for specs"
+  task :start do
+    log = "/tmp/memcached.log"
+    system ">#{log}"
+
+    verbosity = (ENV['DEBUG'] ? "-vv" : "")
+
+    (MEMCACHED_PORTS).each do |port|
+      system "memcached #{verbosity} -p #{port} >> #{log} 2>&1 &"
+    end
+  end
+
+  desc "Kill the memcached instances"
+  task :kill do
+    `ps awx`.split("\n").grep(/#{MEMCACHED_PORTS.to_a.join('|')}/).map do |process| 
+      system("kill -9 #{process.to_i}") rescue nil
+    end
+  end
+end
