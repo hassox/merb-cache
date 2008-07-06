@@ -6,6 +6,11 @@ describe Merb::Cache::StrategyStore do
   shared_examples_for 'all strategy stores' do
     it_should_behave_like 'all stores'
 
+    before(:each) do
+      [Merb::Cache.stores, Merb::Cache.precedence].each {|e| e.clear}
+      Thread.current[:'merb-cache'] = nil
+    end
+
     describe ".contextualize" do
       it "should return a subclass of itself" do
         subclass = @klass.contextualize(Class.new(Merb::Cache::AbstractStore))

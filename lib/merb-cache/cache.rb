@@ -12,6 +12,7 @@ module Merb
     autoload :FileStore,        "merb-cache" / "stores" / "file_store"
     autoload :GzipStore,        "merb-cache" / "stores" / "gzip_store"
     autoload :MemcachedStore,   "merb-cache" / "stores" / "memcached_store"
+    autoload :SHA1Store,        "merb-cache" / "stores" / "sha1_store"
     autoload :StrategyStore,    "merb-cache" / "stores" / "strategy_store"
     
     class << self
