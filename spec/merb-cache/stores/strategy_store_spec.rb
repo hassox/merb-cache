@@ -12,9 +12,9 @@ describe Merb::Cache::StrategyStore do
         subclass.superclass.should  == @klass
       end
 
-      it "should set the context_classes_or_names attributes" do
+      it "should set the contextualized_stores attributes" do
         subclass = @klass.contextualize(context_class = Class.new(Merb::Cache::AbstractStore))
-        subclass.context_classes_or_names.first.should == context_class
+        subclass.contextualized_stores.first.should == context_class
       end
     end
 

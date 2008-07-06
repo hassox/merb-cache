@@ -1,5 +1,33 @@
 module Merb::Cache
   class StrategyStore < AbstractStore
+    # START: interface for creating strategy stores.  This should/might change.
+    def self.contextualize(*stores)
+        Class.new(self) do
+          cattr_accessor :contextualized_stores
+
+          self.contextualized_stores = stores
+        end
+      end
+
+      class << self
+        alias_method :[], :contextualize
+      end
+
+      attr_accessor :stores
+
+      def initialize(config = {})
+        @stores = contextualized_stores.map do |cs|
+          case cs
+          when Symbol
+            Merb::Cache[cs]
+          when Class
+            cs.new(config)
+          end
+        end
+      end
+
+    # END: interface for creating strategy stores.
+
     attr_accessor :stores
 
     # determines if the store is able to persist data identified by the key & parameters
@@ -51,5 +79,12 @@ module Merb::Cache
     def delete_all!
       raise NotImplementedError
     end
+
+    def clone
+      twin = super
+      twin.stores = self.stores.map {|s| s.clone}
+      twin
+    end
+    
   end
 end

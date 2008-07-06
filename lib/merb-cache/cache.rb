@@ -10,6 +10,7 @@ module Merb
     autoload :AbstractStore,    "merb-cache" / "stores" / "abstract_store"
     autoload :AdhocStore,       "merb-cache" / "stores" / "adhoc_store"
     autoload :FileStore,        "merb-cache" / "stores" / "file_store"
+    autoload :GzipStore,        "merb-cache" / "stores" / "gzip_store"
     autoload :MemcachedStore,   "merb-cache" / "stores" / "memcached_store"
     autoload :StrategyStore,    "merb-cache" / "stores" / "strategy_store"
     
