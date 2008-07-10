@@ -1,0 +1,173 @@
+## Simple Example
+class MyController < Applciation
+
+  cache :only => [:show, :index]
+  
+  def index
+    @items = Item.all
+    render
+  end
+  
+  def show
+    @item = Item.get(parmas[:id])
+    render
+  end
+  
+  def create
+    @item = Item.new(params[:item])
+    if @item.save
+      refresh_action :show, :id => @item.id
+      refresh_action :index 
+      redirect url(:item, @item)      
+    else
+      render :new    
+    end
+  end
+  
+  def update
+    @item = Item.get(params[:id])
+    if @item.update_attributes(params[:item])
+      refresh_action :show, :id => @item.id
+      refresh_action :index
+      redirect url(:item, @item)
+    else
+      render :edit
+    end
+  end
+  
+  def destroy
+    @item = Item.get(params[:id])
+    if @item.destroy
+      expire_action  :show, :id => @item.id
+      refresh_action :index
+    else
+      redirect url(:items, @item)
+    end
+  end
+end
+
+## Medium Complexity Example
+class MediumComplexity < Application
+
+  cache_page :index
+  
+  cache :show, :store => :main_filestore do |controller|
+    params_key [:department_id, :id]
+  end
+  
+  after :only => [:update, :create] do
+    refresh_action :show, :id => params[:id]  
+    refresh_page   controller.url(:items)
+  end
+  
+  after :destroy do
+    expire_action :show, :id => params[:id]
+    refresh_page  controller.url(:items)
+  end
+  
+  def index
+    @items = Item.all
+    render
+  end
+  
+  def show
+    @item = Item.get(params[:id]) 
+    render  
+  end
+  
+  def create
+    @item = Item.new(params[:item])
+    if @item.save
+      redirect url(:item, @item)      
+    else
+      no_cache_update!
+      render :new    
+    end
+  end
+  
+  def update
+    @item = Item.get(params[:id])
+    if @item.update_attributes(params[:item])
+      redirect url(:item, @item)
+    else
+      no_cache_update!
+      render :edit
+    end
+  end
+  
+  def destroy
+    @item = Item.get(params[:id])
+    if @item.destroy
+      redirect url(:items)
+    else
+      no_cache_update!
+      redirect url(:item, @item)
+    end
+  end
+end
+
+## Complex Examples
+class MyController < Application
+  
+  # cache! :only => [:show, :index]
+  
+  cache :show, :index, :expire => 15 do |controller|
+    item = Item.get(params[:id])
+    base_key    request.controller_name / controller.action_name 
+    params_key  [item.department.id, item.owner.id, :id]
+    id_key      [:id, controller.query_params]
+    stores      :my_custom_strategy
+  end
+  
+   after :create, :update do
+     refresh_action  :show, 
+                     :id => params[:id]
+                    
+     refresh_action  :index
+                    
+     refresh_action  :index, 
+                     :controller => OtherController
+                    
+      refresh_page "/"
+    end
+  
+    after :destroy do
+      expire_action :action => :show,
+                    :id     => params[:id]
+    end
+    
+  end
+  
+  def index
+    @items = Item.all
+    render
+  end
+  
+  def show
+    @item = Item.get(params[:id]) 
+    render  
+  end
+  
+  def create
+    @item = Item.new(params[:item])
+    if @item.save
+      redirect url(:item, @item)      
+    else
+      no_cache_update!
+      render :new    
+    end
+  end
+  
+  def update
+    @item = Item.get(params[:id])
+    if @item.update_attributes(params[:item])
+      redirect url(:item, @item)
+    else
+      no_cache_update!
+      render :edit
+    end
+  end
+  
+end
+
+      
