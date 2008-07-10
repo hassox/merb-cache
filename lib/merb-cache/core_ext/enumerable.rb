@@ -6,19 +6,4 @@ module Enumerable
 
     nil
   end
-
-  def capture_intersection
-    inject(nil) do |c, o|
-      val = yield(o)
-      c || val
-    end
-  end
-
-  def capture_conjunction
-    return nil if empty?
-
-    inject(true) do |c, o|
-      c && yield(o)
-    end
-  end
 end

@@ -31,7 +31,7 @@ module Merb::Cache
     # returns nil if none of the stores were able to persist the data.
     # returns true if at least one write was successful.
     def write_all(key, data = nil, parameters = {}, conditions = {})
-      @stores.capture_intersection {|s| s.write_all(key, data, parameters, conditions)}
+      @stores.map {|s| s.write_all(key, data, parameters, conditions)}.all?
     end
 
     # tries to read the data from the store.  If that fails, it calls
@@ -55,7 +55,7 @@ module Merb::Cache
     # considered dangerous because strategy stores which call delete_all!
     # on their context stores could delete other store's entrees.
     def delete_all!
-      @stores.capture_intersection {|s| s.delete_all!}
+      @stores.map {|s| s.delete_all!}.any?
     end
   end
 end

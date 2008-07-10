@@ -27,7 +27,7 @@ module Merb::Cache
 
     def write_all(key, data = nil, parameters = {}, conditions = {})
       if writable?(key, parameters, conditions)
-        @stores.capture_intersection {|c| c.write_all(digest(key, parameters), data, {}, conditions)}
+        @stores.map {|c| c.write_all(digest(key, parameters), data, {}, conditions)}.all?
       end
     end
 
@@ -40,11 +40,11 @@ module Merb::Cache
     end
 
     def delete(key, parameters = {})
-      @stores.capture_intersection {|c| c.delete(digest(key, parameters))}
+      @stores.map {|c| c.delete(digest(key, parameters))}.any?
     end
 
     def delete_all!
-      @stores.capture_intersection {|c| c.delete_all! }
+      @stores.map {|c| c.delete_all! }.all?
     end
 
     def digest(key, parameters = {})
