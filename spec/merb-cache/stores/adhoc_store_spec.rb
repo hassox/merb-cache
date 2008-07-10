@@ -5,7 +5,7 @@ describe Merb::Cache::AdhocStore do
   it_should_behave_like 'all stores'
 
   before(:each) do
-    [Merb::Cache.stores, Merb::Cache.precedence].each {|e| e.clear}
+    Merb::Cache.stores.clear
     Thread.current[:'merb-cache'] = nil
     Merb::Cache.setup(:dummy, DummyStore)
     @store = Merb::Cache::AdhocStore[:dummy]

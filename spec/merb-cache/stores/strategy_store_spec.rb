@@ -7,7 +7,7 @@ describe Merb::Cache::StrategyStore do
     it_should_behave_like 'all stores'
 
     before(:each) do
-      [Merb::Cache.stores, Merb::Cache.precedence].each {|e| e.clear}
+      Merb::Cache.stores.clear
       Thread.current[:'merb-cache'] = nil
     end
 

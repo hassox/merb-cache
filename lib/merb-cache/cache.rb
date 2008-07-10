@@ -16,11 +16,10 @@ module Merb
     autoload :StrategyStore,    "merb-cache" / "stores" / "strategy_store"
     
     class << self
-      attr_accessor :stores, :precedence
+      attr_accessor :stores
     end
 
     self.stores = {}
-    self.precedence = []
 
     # Cache store lookup
     # name<Symbol> : The name of a registered store
@@ -49,39 +48,10 @@ module Merb
       raise "#{name} store already setup" if @stores.has_key?(name)
 
       @stores[name] = klass.new(opts)
-      @precedence << name unless @precedence.include? name
     end
 
     def self.default_store_name
       :default
-    end
-
-    def self.read(key, parameters = {}, conditions = {})
-      self[precedence].read(key, parameters, conditions)
-    end
-
-    def self.write(key, data = nil, parameters = {}, conditions = {})
-      self[precedence].write(key, parameters, conditions)
-    end
-
-    def self.write_all(key, data = nil, parameters = {}, conditions = {})
-      self[precedence].write_all(key, data, parameters, conditions)
-    end
-
-    def self.fetch(key, parameters = {}, conditions = {}, &blk)
-      self[precedence].fetch(key, parameters, conditions, &blk)
-    end
-
-    def self.exists?(key, parameters = {})
-      self[precedence].exists?(key, parameters)
-    end
-
-    def self.delete(key, parameters = {})
-      self[precedence].delete(key, parameters)
-    end
-
-    def self.delete_all!
-      self[precedence].delete_all!
     end
 
     class NotSupportedError < Exception; end
