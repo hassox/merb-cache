@@ -53,6 +53,12 @@ module Merb
       @stores[name] = klass.new(opts)
     end
 
+    def self.exists?(name)
+      return true if self[name]
+    rescue StoreNotFound
+      return false
+    end
+
     def self.default_store_name
       :default
     end

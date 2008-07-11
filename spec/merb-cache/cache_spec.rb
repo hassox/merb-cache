@@ -25,7 +25,19 @@ describe Merb::Cache do
         Merb::Cache.setup(DummyStore)
       end.should raise_error(Merb::Cache::StoreExists)
     end
+  end
+  
+  describe ".exists?" do
+    it "should return true if a repository is setup" do
+      Merb::Cache.setup(DummyStore)
+      Merb::Cache.setup(:store_that_exists, DummyStore)
+      Merb::Cache.exists?(:default).should be_true
+      Merb::Cache.exists?(:store_that_exists).should be_true
+    end
     
+    it "should return false if a repository is not setup" do
+      Merb::Cache.exists?(:not_here).should be_false
+    end
   end
 
   describe ".[]" do
