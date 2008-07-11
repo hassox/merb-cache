@@ -9,7 +9,30 @@ describe "Merb::Controller cache proxy" do
     end
     
     describe "instance methods" do
-      # cache should instantiate a proxy if one doesn't exist
+      # cache(:store) should instantiate a proxy if one doesn't exist
+      
+      describe "force_cache_update!" do
+        # @controller.cache.force_update!
+      end
+      
+      describe "expire_cache!" do
+        # @controller.cache.expire!(:action, :show, {:id => blah}, @controller.request.env)
+        # @controller.cache.expire!
+        # @controller.cache.expire!(:page, :index)
+        # @controller.cache.fragment.expire!(:this => is, :my => :key)
+      end
+
+      describe "refresh_cache!" do
+        # @controller.cache.refresh!(:action, :show, :id => blah)
+        # @controller.cache(:my_store).refresh!(:page, :index)      
+      end
+
+      describe "fragment_cache" do
+        # should instantiate a FragmentCacheProxy
+        # @controller.cache.fragment.write
+        # @controller.cache(:my_frag_cache).fragment.read(key)
+      end
+      
     end    
   end
    
@@ -66,33 +89,10 @@ describe "Merb::Controller cache proxy" do
       it "should evaluate to a string"   
       it "should evaluate to a string the return of the block"
     end
-
-    describe "force_update!" do
-      # @controller.cache.force_update!
-    end
     
     describe "retain_cache!" do
       # @controller.cache.retain_cache!
     end
-    
-    describe "expire!" do
-      # @controller.cache.expire!(:action, :show, :id => blah)
-      # @controller.cache.expire!
-      # @controller.cache.expire!(:page, :index)
-      # @controller.cache.fragment.expire!(:this => is, :my => :key)
-    end
-    
-    describe "refresh!" do
-      # @controller.cache.refresh!(:action, :show, :id => blah)
-      # @controller.cache(:my_store).refresh!(:page, :index)      
-    end
-    
-    describe "fragment" do
-      # should instantiate a FragmentCacheProxy
-      # @controller.cache.fragment.write
-      # @controller.cache(:my_frag_cache).fragment.read(key)
-    end
-      
   end
   
 end
