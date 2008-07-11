@@ -6,7 +6,6 @@ describe "Merb::Controller cache proxy" do
     describe "class methods" do
       # cache.page # should use  a PageCacheProxy
       # cache.action # shoudl use an ActionCacheProxy
-      
     end
     
     describe "instance methods" do
@@ -74,19 +73,24 @@ describe "Merb::Controller cache proxy" do
     
     describe "retain_cache!" do
       # @controller.cache.retain_cache!
-      
     end
     
     describe "expire!" do
-      
+      # @controller.cache.expire!(:action, :show, :id => blah)
+      # @controller.cache.expire!
+      # @controller.cache.expire!(:page, :index)
+      # @controller.cache.fragment.expire!(:this => is, :my => :key)
     end
     
     describe "refresh!" do
-      
+      # @controller.cache.refresh!(:action, :show, :id => blah)
+      # @controller.cache(:my_store).refresh!(:page, :index)      
     end
     
     describe "fragment" do
       # should instantiate a FragmentCacheProxy
+      # @controller.cache.fragment.write
+      # @controller.cache(:my_frag_cache).fragment.read(key)
     end
       
   end
