@@ -26,10 +26,13 @@ module Merb
     # Returns<Nil AbstractStore> : A thread-safe copy of the store
     def self.[](*names)
       if names.size == 1
-        (Thread.current[:'merb-cache'] ||= clone_stores)[names.first]
+        Thread.current[:'merb-cache'] ||= {}
+        (Thread.current[:'merb-cache'][names.first] ||= stores[names.first].clone) 
       else
         AdhocStore[*names]
       end
+    rescue TypeError
+      raise(StoreNotFound, "Could not find the :#{names.first} store")
     end
 
     # Clones the cache stores for the current thread
@@ -55,5 +58,7 @@ module Merb
     end
 
     class NotSupportedError < Exception; end
+    
+    class StoreNotFound < Exception; end
   end #Cache
 end #Merb

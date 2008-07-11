@@ -39,5 +39,22 @@ describe Merb::Cache do
       Merb::Cache.setup(:dummy, DummyStore)
       Merb::Cache[:default, :dummy].class.should == Merb::Cache::AdhocStore
     end
+    
+    it "should let you create new stores after accessing the old ones" do
+      Merb::Cache.setup(DummyStore)
+      Merb::Cache.setup(:one, DummyStore)
+      Merb::Cache[:default].should_not be_nil
+      Merb::Cache[:one].should_not be_nil
+      Merb::Cache.setup(:two, DummyStore)
+      Merb::Cache[:two].should_not be_nil
+    end
+    
+    it "should raise an error if the cache has not been setup" do
+      Merb::Cache.setup(DummyStore)
+      Merb::Cache[:default].should_not be_nil      
+      lambda do
+        Merb::Cache[:does_not_exist]
+      end.should raise_error(Merb::Cache::StoreNotFound)
+    end
   end
 end
