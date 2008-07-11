@@ -4,4 +4,5 @@ if defined?(Merb::Plugins)
   require "merb-cache" / "core_ext" / "enumerable"
   require "merb-cache" / "core_ext" / "hash"
   require "merb-cache" / "merb_ext" / "controller"
+  require "merb-cache" / "merb_ext" / "support" / "cache_proxy"
 end
