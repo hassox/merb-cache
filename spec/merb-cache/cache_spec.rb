@@ -18,6 +18,14 @@ describe Merb::Cache do
       Merb::Cache.setup(DummyStore)
       Merb::Cache.stores.should have_key(:default)
     end
+    
+    it "should not allow a store to be redefined" do
+      Merb::Cache.setup(DummyStore)
+      lambda do
+        Merb::Cache.setup(DummyStore)
+      end.should raise_error(Merb::Cache::StoreExists)
+    end
+    
   end
 
   describe ".[]" do

@@ -48,7 +48,7 @@ module Merb
       klass, opts = nil, klass if klass.is_a? Hash
       name, klass = default_store_name, name if klass.nil?
 
-      raise "#{name} store already setup" if @stores.has_key?(name)
+      raise StoreExists, "#{name} store already setup" if @stores.has_key?(name)
 
       @stores[name] = klass.new(opts)
     end
@@ -58,6 +58,8 @@ module Merb
     end
 
     class NotSupportedError < Exception; end
+    
+    class StoreExists < Exception; end
     
     class StoreNotFound < Exception; end
   end #Cache

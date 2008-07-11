@@ -16,11 +16,11 @@ Spec::Runner.configure do |config|
 end
 
 class DummyStore < Merb::Cache::AbstractStore
-  attr_accessor :vault
+  attr_accessor :vault, :options
   
   def initialize(config = {})
     super(config)
-
+    @options = config
     @vault = {}
   end
 
