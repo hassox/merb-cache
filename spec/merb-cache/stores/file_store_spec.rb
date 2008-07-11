@@ -126,11 +126,11 @@ describe Merb::Cache::FileStore do
     end
 
     it "should add any parameters to the end of the filename" do
-      @store.pathify("index.html", :page => 3, :lang => :en).should =~ /page=3\&lang=en$|lang=en\&page=3$/
+      @store.pathify("index.html", :page => 3, :lang => :en).should =~ %r[--#{{:page => 3, :lang => :en}.to_sha2}$]
     end
 
     it "should seperate the parameters from the key by a '?'" do
-      @store.pathify("index.html", :page => 3, :lang => :en).should =~ /\/index.html\?(?:page=3\&lang=en|lang=en\&page=3)$/
+      @store.pathify("index.html", :page => 3, :lang => :en).should =~ %r[--#{{:page => 3, :lang => :en}.to_sha2}$]
     end
   end
 end

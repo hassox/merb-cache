@@ -71,7 +71,7 @@ module Merb::Cache
     end
 
     def normalize(key, parameters = {})
-      parameters.empty? ? "#{key}" : "#{key}?#{parameters.to_params}"
+      parameters.empty? ? "#{key}" : "#{key}--#{parameters.to_sha2}"
     end
 
     def expire_time(conditions = {})

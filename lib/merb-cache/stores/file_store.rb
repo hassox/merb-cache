@@ -82,7 +82,7 @@ module Merb::Cache
         path = "#{@dir}/#{key}"
       end
 
-      path << "?#{parameters.to_params}" unless parameters.empty?
+      path << "--#{parameters.to_sha2}" unless parameters.empty?
       path
     end
   end

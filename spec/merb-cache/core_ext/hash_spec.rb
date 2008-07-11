@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Hash do
   
@@ -7,16 +7,14 @@ describe Hash do
       @params = {:id => 1, :string => "string", :symbol => :symbol}
     end
     
-    it{@params.should_respond_to(:to_sha1)}
+    it{@params.should respond_to(:to_sha2)}
     
     it "should encode the hash by alphabetic key" do
       string = ""
-      @params.keys.sort.each{|k| string << @params[k]}
+      @params.keys.sort_by{|k| k.to_s}.each{|k| string << @params[k].to_s}
       digest = Digest::SHA2.hexdigest(string)    
-    end
-    
-    it "should be repeatable"
-    
+      @params.to_sha2.should == digest      
+    end  
   end
   
 end

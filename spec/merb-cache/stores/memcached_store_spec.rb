@@ -148,7 +148,7 @@ describe Merb::Cache::MemcachedStore do
     end
 
     it "should seperate the parameters from the key by a '?'" do
-      @store.normalize("this/is/the/key", :page => 3, :lang => :en).should =~ /^this\/is\/the\/key\?page=3\&lang=en$|^this\/is\/the\/key\?lang=en\&page=3$/
+      @store.normalize("this/is/the/key", :page => 3, :lang => :en).should =~ %r!this\/is\/the\/key--#{{:page => 3, :lang => :en}.to_sha2}$!
     end
   end
 

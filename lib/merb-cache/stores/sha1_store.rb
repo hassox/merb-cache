@@ -48,7 +48,7 @@ module Merb::Cache
     end
 
     def digest(key, parameters = {})
-      @map[[key, parameters]] ||= Digest::SHA1.hexdigest("#{key}#{parameters.to_params}")
+      @map[[key, parameters]] ||= Digest::SHA1.hexdigest("#{key}#{parameters.to_sha2}")
     end
   end
 end
