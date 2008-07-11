@@ -1,7 +1,7 @@
 require 'digest/sha1'
 
 module Merb::Cache
-  class SHA1Store < StrategyStore
+  class SHA1Store < AbstractStrategyStore
     def initialize(config = {})
       super(config)
       @map = {}

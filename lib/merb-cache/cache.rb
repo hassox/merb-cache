@@ -7,13 +7,15 @@ module Merb
   module Cache
     # autoload is used so that gem dependencies can be required only when needed by
     # adding the require statement in the store file.
-    autoload :AbstractStore,    "merb-cache" / "stores" / "abstract_store"
-    autoload :AdhocStore,       "merb-cache" / "stores" / "adhoc_store"
-    autoload :FileStore,        "merb-cache" / "stores" / "file_store"
-    autoload :GzipStore,        "merb-cache" / "stores" / "gzip_store"
-    autoload :MemcachedStore,   "merb-cache" / "stores" / "memcached_store"
-    autoload :SHA1Store,        "merb-cache" / "stores" / "sha1_store"
-    autoload :StrategyStore,    "merb-cache" / "stores" / "strategy_store"
+    autoload :AbstractStore,    "merb-cache" / "stores" / "fundamental" / "abstract_store"
+    autoload :FileStore,        "merb-cache" / "stores" / "fundamental" / "file_store"
+    autoload :MemcachedStore,   "merb-cache" / "stores" / "fundamental" / "memcached_store"
+    
+    autoload :AbstractStrategyStore,  "merb-cache" / "stores" / "strategy" / "abstract_strategy_store"
+    autoload :AdhocStore,             "merb-cache" / "stores" / "strategy" / "adhoc_store"
+    autoload :GzipStore,              "merb-cache" / "stores" / "strategy" / "gzip_store"
+    autoload :SHA1Store,              "merb-cache" / "stores" / "strategy" / "sha1_store"
+
     
     class << self
       attr_accessor :stores
@@ -52,7 +54,9 @@ module Merb
 
       @stores[name] = klass.new(opts)
     end
-
+    
+    # Checks to see if a given store exists already.
+    
     def self.exists?(name)
       return true if self[name]
     rescue StoreNotFound

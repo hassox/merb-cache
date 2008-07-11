@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 require File.dirname(__FILE__) + '/abstract_store_spec'
 
 
-describe Merb::Cache::StrategyStore do
+describe Merb::Cache::AbstractStrategyStore do
   shared_examples_for 'all strategy stores' do
     it_should_behave_like 'all stores'
 

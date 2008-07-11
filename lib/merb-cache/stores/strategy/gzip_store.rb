@@ -3,7 +3,7 @@ require 'zlib'
 require 'stringio'
 
 module Merb::Cache
-  class GzipStore < StrategyStore
+  class GzipStore < AbstractStrategyStore
     def writable?(key, parameters = {}, conditions = {})
       true
     end

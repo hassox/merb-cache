@@ -1,5 +1,5 @@
 module Merb::Cache
-  class StrategyStore < AbstractStore
+  class AbstractStrategyStore < AbstractStore
     # START: interface for creating strategy stores.  This should/might change.
     def self.contextualize(*stores)
         Class.new(self) do

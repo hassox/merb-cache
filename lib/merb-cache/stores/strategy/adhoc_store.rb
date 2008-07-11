@@ -1,5 +1,5 @@
 module Merb::Cache
-  class AdhocStore < StrategyStore
+  class AdhocStore < AbstractStrategyStore
     class << self
       alias_method :[], :new
     end
