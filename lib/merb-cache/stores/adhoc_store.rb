@@ -48,14 +48,14 @@ module Merb::Cache
 
     # deletes the entry for the key & parameter from the store.
     def delete(key, parameters = {})
-      @stores.any? {|s| s.delete(key, parameters)}
+      @stores.map {|s| s.delete(key, parameters)}.any?
     end
 
     # deletes all entries for the key & parameters for the store.
     # considered dangerous because strategy stores which call delete_all!
     # on their context stores could delete other store's entrees.
     def delete_all!
-      @stores.map {|s| s.delete_all!}.any?
+      @stores.map {|s| s.delete_all!}.all?
     end
   end
 end
