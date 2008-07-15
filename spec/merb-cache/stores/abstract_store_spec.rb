@@ -4,7 +4,7 @@ describe Merb::Cache::AbstractStore do
   shared_examples_for 'all stores' do
     describe "#writable?" do
       it "should not raise a NotImplementedError error" do
-        lambda { @store.writable? }.should_not raise_error(NotImplementedError)
+        lambda { @store.writable?(:foo) }.should_not raise_error(NotImplementedError)
       end
 
       it "should accept a conditions hash" do

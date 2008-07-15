@@ -3,6 +3,7 @@ $:.push File.join(File.dirname(__FILE__), '..', 'lib')
 
 # Deps
 require 'merb-core'
+require 'merb-action-args'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'merb-cache')
 
 # We want logging!
@@ -29,11 +30,25 @@ class DummyStore < Merb::Cache::AbstractStore
   end
 
   def read(key, parameters = {})
-    @vault[[key, parameters]]
+    if @vault.keys.include?(key)
+      @vault[key] if @vault[key].last == parameters
+    end
+  end
+
+  def data(key, parameters = {})
+    read(key, parameters)[0] if read(key, parameters)
+  end
+
+  def time(key, parameters = {})
+    read(key, parameters)[1] if read(key, parameters)
+  end
+
+  def conditions(key, parameters = {})
+    read(key, parameters)[2] if read(key, parameters)
   end
 
   def write(key, data = nil, parameters = {}, conditions = {})
-    @vault[[key, parameters]] = [data, Time.now, conditions]
+    @vault[key] = [data, Time.now, conditions, parameters]
     true
   end
 

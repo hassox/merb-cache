@@ -12,6 +12,7 @@ module Merb
     autoload :MemcachedStore,   "merb-cache" / "stores" / "fundamental" / "memcached_store"
     
     autoload :AbstractStrategyStore,  "merb-cache" / "stores" / "strategy" / "abstract_strategy_store"
+    autoload :ActionStore,            "merb-cache" / "stores" / "strategy" / "action_store"
     autoload :AdhocStore,             "merb-cache" / "stores" / "strategy" / "adhoc_store"
     autoload :GzipStore,              "merb-cache" / "stores" / "strategy" / "gzip_store"
     autoload :SHA1Store,              "merb-cache" / "stores" / "strategy" / "sha1_store"
@@ -29,7 +30,7 @@ module Merb
     def self.[](*names)
       if names.size == 1
         Thread.current[:'merb-cache'] ||= {}
-        (Thread.current[:'merb-cache'][names.first] ||= stores[names.first].clone) 
+        (Thread.current[:'merb-cache'][names.first] ||= stores[names.first].clone)
       else
         AdhocStore[*names]
       end
