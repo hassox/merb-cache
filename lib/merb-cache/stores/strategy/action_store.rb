@@ -4,6 +4,7 @@ module Merb::Cache
       case dispatch
       when Merb::Controller
         @stores.any?{|s| s.writable?(normalize(dispatch), parameters, conditions)}
+      else false
       end
     end
 

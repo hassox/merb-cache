@@ -4,6 +4,7 @@ require File.dirname(__FILE__) + '/abstract_strategy_store_spec'
 describe Merb::Cache::ActionStore do
   it_should_behave_like 'all strategy stores'
 
+  # this could be cleaned up a bit
   before(:each) do
     Merb::Cache.stores.clear
     Thread.current[:'merb-cache'] = nil
@@ -12,8 +13,77 @@ describe Merb::Cache::ActionStore do
     Merb::Cache.setup(:dummy, DummyStore)
     Merb::Cache.setup(:default, @klass)
 
-    @dummy = Merb::Cache[:dummy]
     @store = Merb::Cache[:default]
+    @dummy = @store.stores.first
+
+    class TestController < Merb::Controller; def action; end; end
+    @controller = TestController.new(fake_request)
+    @controller.stub!(:action_name).and_return :action
+    @controller.stub!(:body).and_return 'body'
+  end
+
+  describe "#writable?" do
+    it "should be false if the key argument is not an instance of a controller" do
+      @store.writable?(:foo).should be_false
+    end
+
+    it "should be false if the fundamental store cannot write the normalized key" do
+      @store.stores.first.should_receive(:writable?).and_return false
+
+      @store.writable?(@controller).should be_false
+    end
+
+    it "should be true if the key is a controller instance and the fundamental store is writable" do
+      @store.writable?(@controller).should be_true
+    end
+  end
+
+  describe "#read" do
+    it "should pass the normalized dispatch as the key to the context cache" do
+      @dummy.should_receive(:read).with("TestController#action", {})
+
+      @store.read(@controller)
+    end
+  end
+
+  describe "#write" do
+    it "should pass the normalized dispatch as the key to the fundamental store" do
+      @dummy.should_receive(:write).with("TestController#action", @controller.body, {}, {})
+
+      @store.write(@controller)
+    end
+
+    it "should not store to the context cache if the dispatch is not storable" do
+      @dummy.should_not_receive(:write)
+
+      @store.write(:foo).should be_nil
+    end
+
+    it "should use the controller instance's body as the data" do
+      @controller.should_receive(:body)
+
+      @store.write(@controller)
+    end
+  end
+
+  describe "#write_all" do
+    it "should pass the normalized dispatch as the key to the fundamental store" do
+      @dummy.should_receive(:write_all).with("TestController#action", @controller.body, {}, {})
+
+      @store.write_all(@controller)
+    end
+
+    it "should not store to the context cache if the dispatch is not storable" do
+      @dummy.should_not_receive(:write_all)
+
+      @store.write_all(:foo).should be_nil
+    end
+
+    it "should use the controller instance's body as the data" do
+      @controller.should_receive(:body)
+
+      @store.write_all(@controller)
+    end
   end
 
   describe "examples" do
