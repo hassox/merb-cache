@@ -1,5 +1,5 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
-require File.dirname(__FILE__) + '/strategy_store_spec'
+require File.dirname(__FILE__) + '/../../../spec_helper'
+require File.dirname(__FILE__) + '/abstract_strategy_store_spec'
 
 describe Merb::Cache::SHA1Store do
   it_should_behave_like 'all strategy stores'

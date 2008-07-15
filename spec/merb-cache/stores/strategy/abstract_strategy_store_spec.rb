@@ -1,5 +1,5 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
-require File.dirname(__FILE__) + '/abstract_store_spec'
+require File.dirname(__FILE__) + '/../../../spec_helper'
+require File.dirname(__FILE__) + '/../fundamental/abstract_store_spec'
 
 
 describe Merb::Cache::AbstractStrategyStore do
