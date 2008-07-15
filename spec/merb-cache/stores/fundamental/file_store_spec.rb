@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../spec_helper'
+require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/abstract_store_spec'
 
 describe Merb::Cache::FileStore do
