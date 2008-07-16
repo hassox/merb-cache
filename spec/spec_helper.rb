@@ -13,7 +13,9 @@ Merb.start :environment => "test", :adapter => "runner"
 
 require "merb-core/test"
 Spec::Runner.configure do |config|
-  config.include Merb::Test::RequestHelper
+  config.include Merb::Test::Helpers
+  #config.include Merb::Test::ControllerHelper
+  config.include Merb::Test::RouteHelper
 end
 
 class DummyStore < Merb::Cache::AbstractStore

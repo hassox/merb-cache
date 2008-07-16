@@ -15,6 +15,7 @@ module Merb
     autoload :ActionStore,            "merb-cache" / "stores" / "strategy" / "action_store"
     autoload :AdhocStore,             "merb-cache" / "stores" / "strategy" / "adhoc_store"
     autoload :GzipStore,              "merb-cache" / "stores" / "strategy" / "gzip_store"
+    autoload :PageStore,              "merb-cache" / "stores" / "strategy" / "page_store"
     autoload :SHA1Store,              "merb-cache" / "stores" / "strategy" / "sha1_store"
 
     

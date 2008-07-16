@@ -87,7 +87,7 @@ describe Merb::Cache::ActionStore do
   end
 
   describe "examples" do
-    class Scores < Merb::Controller
+    class MLBScores < Merb::Controller
       cache :index, :show
       cache :overview
       cache :short, :params => :page
@@ -95,65 +95,65 @@ describe Merb::Cache::ActionStore do
       cache :ticker, :expire_in => 10
 
       def index
-        "Scores index"
+        "MLBScores index"
       end
 
       def show(team)
-        "Scores show(#{team})"
+        "MLBScores show(#{team})"
       end
 
       def overview(team = :all)
-        "Scores overview(#{team})"
+        "MLBScores overview(#{team})"
       end
 
       def short(team = :all)
-        "Scores short(#{team})[#{params[:page]}]"
+        "MLBScores short(#{team})[#{params[:page]}]"
       end
 
       def stats(start_date, end_date, team = :all)
-        "Scores stats(#{team}, #{start_date}, #{end_date})"
+        "MLBScores stats(#{team}, #{start_date}, #{end_date})"
       end
 
       def ticker
-        "Scores ticker"
+        "MLBScores ticker"
       end
     end
 
     it "should cache the index action on the first request" do
-      dispatch_to(Scores, :index)
+      dispatch_to(MLBScores, :index)
 
-      @dummy.data("Scores#index").should == "Scores index"
+      @dummy.data("MLBScores#index").should == "MLBScores index"
     end
 
     it "should cache the show action by the team parameter using the action arguments" do
-      dispatch_to(Scores, :show, :team => :redsox)
+      dispatch_to(MLBScores, :show, :team => :redsox)
 
-      @dummy.data("Scores#show", :team => 'redsox').should == "Scores show(redsox)"
+      @dummy.data("MLBScores#show", :team => 'redsox').should == "MLBScores show(redsox)"
     end
 
     it "should cache the overview action by the default parameter if none is given" do
-      dispatch_to(Scores, :overview)
+      dispatch_to(MLBScores, :overview)
 
-      @dummy.data("Scores#overview", :team => :all).should == "Scores overview(all)"
+      @dummy.data("MLBScores#overview", :team => :all).should == "MLBScores overview(all)"
     end
 
     it "should cache the short action by the team & page parameters" do
-      dispatch_to(Scores, :short, :team => :bosux, :page => 4)
+      dispatch_to(MLBScores, :short, :team => :bosux, :page => 4)
 
-      @dummy.data("Scores#short", :team => 'bosux', :page => '4').should == "Scores short(bosux)[4]"
+      @dummy.data("MLBScores#short", :team => 'bosux', :page => '4').should == "MLBScores short(bosux)[4]"
     end
 
     it "should cache the stats action by team, start_date & end_date parameters" do
       start_date, end_date = Time.today.to_s, Time.now.to_s
-      dispatch_to(Scores, :stats, :start_date => start_date, :end_date => end_date)
+      dispatch_to(MLBScores, :stats, :start_date => start_date, :end_date => end_date)
 
-      @dummy.data("Scores#stats", :team => :all, :start_date => start_date, :end_date => end_date).should == "Scores stats(all, #{start_date}, #{end_date})"
+      @dummy.data("MLBScores#stats", :team => :all, :start_date => start_date, :end_date => end_date).should == "MLBScores stats(all, #{start_date}, #{end_date})"
     end
 
     it "should cache the ticker action with an expire_in condition" do
-      dispatch_to(Scores, :ticker)
+      dispatch_to(MLBScores, :ticker)
 
-      @dummy.conditions("Scores#ticker")[:expire_in].should == 10
+      @dummy.conditions("MLBScores#ticker")[:expire_in].should == 10
     end
   end
 end
