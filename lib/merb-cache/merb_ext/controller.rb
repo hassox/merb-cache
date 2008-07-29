@@ -23,6 +23,32 @@ module Merb::Cache::CacheMixin
       alias_method "_cache_#{action}_before", :_cache_before
       alias_method "_cache_#{action}_after",  :_cache_after
     end
+
+    def eager_cache(trigger_action, target, conditions = {})
+      if target.is_a? Array
+        target_controller, target_action = *target
+        conditions[:controller] = target_controller
+      else
+        target_action = target
+      end
+
+      after("_eager_cache_#{trigger_action}_after", conditions.only(:if, :unless).merge(:with => [conditions.except(:if, :unless)], :only => trigger_action))
+      alias_method "_eager_cache_#{trigger_action}_after", :_eager_cache_after
+    end
+  end
+
+  def fetch_partial(template, opts={}, conditions = {})
+    template_id = template.to_s
+    if template_id =~ %r{^/}
+      template_path = File.dirname(template_id) / "_#{File.basename(template_id)}"
+    else
+      kontroller = (m = template_id.match(/.*(?=\/)/)) ? m[0] : controller_name
+      template_id = "_#{File.basename(template_id)}"
+    end
+
+    unused, template_key = _template_for(template_id, opts.delete(:format) || content_type, kontroller, template_path)
+
+    Merb::Cache[_lookup_store(conditions)].fetch(template_key, opts, conditions) { partial(template, opts) }
   end
 
   def _cache_before(conditions = {})
@@ -36,6 +62,10 @@ module Merb::Cache::CacheMixin
     if Merb::Cache[_lookup_store(conditions)].write(self, nil, *_parameters_and_conditions(conditions))
       @_cache_write = true
     end
+  end
+
+  def _eager_cache_after(conditions)
+    
   end
 
   def _lookup_store(conditions)
