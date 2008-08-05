@@ -33,7 +33,7 @@ module Merb::Cache
     end
 
     def fetch(key, parameters = {}, conditions = {}, &blk)
-      read(key, parameters) || (writable?(key, parameters, conditions) && write(key, blk.call, parameters, conditions))
+      read(key, parameters) || (writable?(key, parameters, conditions) && write(key, value = blk.call, parameters, conditions) && value)
     end
 
     def exists?(key, parameters = {})

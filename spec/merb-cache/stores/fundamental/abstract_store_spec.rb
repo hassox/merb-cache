@@ -68,6 +68,10 @@ describe Merb::Cache::AbstractStore do
       it "should accept a value generating block" do
         @store.fetch('foo') {'bar'}
       end
+
+      it "should return the value of the block if it is called" do
+        @store.fetch(:boo) { "bar" }.should == "bar" if @store.writable?(:boo)
+      end
     end
 
     describe "#exists?" do
