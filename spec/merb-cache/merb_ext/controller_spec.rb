@@ -100,4 +100,10 @@ describe Merb::Cache::CacheMixin do
       @controller._parameters_and_conditions(:params => :foo).first.should include(:foo)
     end
   end
+
+  describe "#_set_skip_cache" do
+    it "should set @_skip_cache = true" do
+      lambda { @controller._set_skip_cache }.should change { @controller.instance_variable_get(:@_skip_cache) }.to(true)
+    end
+  end
 end

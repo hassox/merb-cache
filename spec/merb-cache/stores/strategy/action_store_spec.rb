@@ -1,6 +1,8 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/abstract_strategy_store_spec'
 
+require 'ruby-debug'
+
 describe Merb::Cache::ActionStore do
   it_should_behave_like 'all strategy stores'
 
@@ -87,12 +89,24 @@ describe Merb::Cache::ActionStore do
   end
 
   describe "examples" do
+    class MLBSchedule < Merb::Controller
+      cache :index
+
+      def index
+        "MLBSchedule index"
+      end
+    end
+
     class MLBScores < Merb::Controller
       cache :index, :show
       cache :overview
       cache :short, :params => :page
       cache :stats, :params => [:start_date, :end_date]
       cache :ticker, :expire_in => 10
+
+      eager_cache :index, [MLBSchedule, :index]
+      eager_cache :overview, :index
+      eager_cache(:short, :params => :page) {|c| c.params[:page] = (c.params[:page].to_i + 1).to_s}
 
       def index
         "MLBScores index"
@@ -154,6 +168,24 @@ describe Merb::Cache::ActionStore do
       dispatch_to(MLBScores, :ticker)
 
       @dummy.conditions("MLBScores#ticker")[:expire_in].should == 10
+    end
+
+    it "should eager cache MLBSchedule#index after a request to MLBScores#index" do
+      dispatch_to(MLBScores, :index)
+
+      @dummy.data("MLBSchedule#index").should == "MLBSchedule index"
+    end
+
+    it "should eager cache :index after a request to :overview" do
+      dispatch_to(MLBScores, :overview)
+
+      @dummy.data("MLBScores#index").should == "MLBScores index"
+    end
+
+    it "should eager cache the next :short page" do
+      dispatch_to(MLBScores, :short, :team => :bosux, :page => 4)
+
+      @dummy.data("MLBScores#short", :team => 'bosux', :page => '5').should == "MLBScores short(bosux)[5]"
     end
   end
 end

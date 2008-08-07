@@ -19,12 +19,13 @@ Spec::Runner.configure do |config|
 end
 
 class DummyStore < Merb::Cache::AbstractStore
-  attr_accessor :vault, :options
+  cattr_accessor :vault
+  attr_accessor  :options
   
   def initialize(config = {})
     super(config)
     @options = config
-    @vault = {}
+    @@vault = {}
   end
 
   def writable?(*args)
@@ -32,8 +33,9 @@ class DummyStore < Merb::Cache::AbstractStore
   end
 
   def read(key, parameters = {})
-    if @vault.keys.include?(key)
-      @vault[key] if @vault[key].last == parameters
+        
+    if @@vault.keys.include?(key)
+      @@vault[key].find {|data, timestamp, conditions, params| params == parameters}
     end
   end
 
@@ -50,23 +52,23 @@ class DummyStore < Merb::Cache::AbstractStore
   end
 
   def write(key, data = nil, parameters = {}, conditions = {})
-    @vault[key] = [data, Time.now, conditions, parameters]
+    (@@vault[key] ||= []) << [data, Time.now, conditions, parameters]
     true
   end
 
   def fetch(key, parameters = {}, conditions = {}, &blk)
-    @vault[[key, parameters]] ||= blk.call
+    @@vault[[key, parameters]] ||= blk.call
   end
 
   def exists?(key, parameters = {})
-    @vault.has_key? [key, parameters]
+    @@vault.has_key? [key, parameters]
   end
 
   def delete(key, parameters = {})
-    @vault.delete([key, parameters]) unless vault[[key, parameters]].nil?
+    @@vault.delete([key, parameters]) unless @@vault[[key, parameters]].nil?
   end
 
   def delete_all
-    @vault = {}
+    @@vault = {}
   end
 end

@@ -23,9 +23,9 @@ describe Merb::Cache::PageStore do
 
       cache :index, :show
       cache :overview
-      cache :short, :params => :page
-      cache :stats, :params => [:start_date, :end_date]
 
+      eager_cache(:index, :overview) {|c| c.request.env['REQUEST_PATH'] = c.url(:overview)}
+      eager_cache :overview, :index
 
       def index
         "NHLScores index"
@@ -34,12 +34,17 @@ describe Merb::Cache::PageStore do
       def show(team)
         "NHLScores show(#{team})"
       end
+
+      def overview
+        "NHLScores overview"
+      end
     end
 
     before(:each) do
       Merb::Router.prepare do |r|
         r.match("/").to(:controller => "nhl_scores", :action => "index").name(:index)
         r.match("/show/:team").to(:controller => "nhl_scores", :action => "show").name(:show)
+        r.match("/overview").to(:controller => "nhl_scores", :action => "overview").name(:overview)
       end
     end
 
@@ -77,11 +82,20 @@ describe Merb::Cache::PageStore do
     it "should not cache the action when a there is a query string parameter" do
       dispatch_to(NHLScores, :index, :page => 2) {|c| c.request.env['REQUEST_PATH'] = url(:index); c.request.env['QUERY_STRING'] = 'page=2'}
 
-      @dummy.vault.should be_empty
+      @dummy.data(url(:index)).should be_nil
     end
 
     it "should not cache a POST request" do
       dispatch_to(NHLScores, :index) {|c| c.request.env['REQUEST_PATH'] = url(:index); c.request.env['REQUEST_METHOD'] = 'post'}
+    end
+
+    it "should not eager cache during an eager cache, causing an infinit loop of eagerness" do
+      pending "an easy way to test run_later :("
+      dispatch_to(NHLScores, :index) {|c| c.request.env['REQUEST_PATH'] = url(:index)}
+
+      sleep(2) # tried a bunch of stuff, but this was the only way that workes when run with the 'spec' command, not the rake task
+
+      @dummy.data("/overview.html").should == "NHLScores overview"
     end
   end
 end

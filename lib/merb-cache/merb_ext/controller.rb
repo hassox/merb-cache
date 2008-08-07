@@ -24,16 +24,29 @@ module Merb::Cache::CacheMixin
       alias_method "_cache_#{action}_after",  :_cache_after
     end
 
-    def eager_cache(trigger_action, target, conditions = {})
+    def eager_cache(trigger_action, target = trigger_action, conditions = {}, &blk)
+      target, conditions = trigger_action, target if target.is_a? Hash
+
       if target.is_a? Array
         target_controller, target_action = *target
-        conditions[:controller] = target_controller
       else
-        target_action = target
+        target_controller, target_action = self, target
       end
 
-      after("_eager_cache_#{trigger_action}_after", conditions.only(:if, :unless).merge(:with => [conditions.except(:if, :unless)], :only => trigger_action))
+      after("_eager_cache_#{trigger_action}_after", conditions.only(:if, :unless).merge(:with => [target_controller, target_action, conditions.except(:if, :unless), blk], :only => trigger_action))
       alias_method "_eager_cache_#{trigger_action}_after", :_eager_cache_after
+    end
+
+    def eager_dispatch(action, env = {}, blk = nil)
+      kontroller = new(Merb::Request.new(env))
+      kontroller.setup_session
+      kontroller._set_skip_cache
+
+      blk.call(kontroller) unless blk.nil?
+
+      kontroller._dispatch(action)
+
+      kontroller
     end
   end
 
@@ -52,20 +65,30 @@ module Merb::Cache::CacheMixin
   end
 
   def _cache_before(conditions = {})
-    if data = Merb::Cache[_lookup_store(conditions)].read(self, _parameters_and_conditions(conditions).first)
+    if @_skip_cache.nil? && data = Merb::Cache[_lookup_store(conditions)].read(self, _parameters_and_conditions(conditions).first)
       throw(:halt, data)
       @_cache_hit = true
     end
   end
 
   def _cache_after(conditions = {})
-    if Merb::Cache[_lookup_store(conditions)].write(self, nil, *_parameters_and_conditions(conditions))
+    if @_skip_cache.nil? && Merb::Cache[_lookup_store(conditions)].write(self, nil, *_parameters_and_conditions(conditions))
       @_cache_write = true
     end
   end
 
-  def _eager_cache_after(conditions)
-    
+  def _eager_cache_after(klass, action, conditions = {}, blk = nil)
+    if @_skip_cache.nil?
+      run_later do
+        controller = klass.eager_dispatch(action, request.env, blk)
+
+        Merb::Cache[controller._lookup_store(conditions)].write(controller, nil, *controller._parameters_and_conditions(conditions))
+      end
+    end
+  end
+
+  def _set_skip_cache
+    @_skip_cache = true
   end
 
   def _lookup_store(conditions)
