@@ -106,9 +106,38 @@ describe Merb::Cache::CacheMixin do
     end
   end
 
-  describe "#_set_skip_cache" do
+  describe "#skip_cache!" do
     it "should set @_skip_cache = true" do
-      lambda { @controller._set_skip_cache }.should change { @controller.instance_variable_get(:@_skip_cache) }.to(true)
+      lambda { @controller.skip_cache! }.should change { @controller.instance_variable_get(:@_skip_cache) }.to(true)
+    end
+  end
+  
+  describe "force_cache!" do
+    class AController < Merb::Controller
+      
+      cache :start
+      
+      def start
+        "START"
+      end      
+    end
+    
+    before(:each) do
+      @mock_store = mock("store", :null_object => true)
+      Merb::Cache.stub!(:[]).and_return(@mock_store)
+      @mock_store.stub!(:read).and_return("CACHED")
+    end
+        
+    it "should try to hit the cache if force_cache is not set" do
+      @mock_store.should_receive(:read).and_return("CACHED")
+      controller = dispatch_to(AController, :start)
+      controller.body.should == "CACHED"
+    end
+    
+    it "should not try to hit the cache if force_cache is set" do
+      @mock_store.should_not_receive(:read)
+      controller = dispatch_to(AController, :start){|c| c.force_cache!}
+      controller.body.should == "START"
     end
   end
 
@@ -179,6 +208,15 @@ describe Merb::Cache::CacheMixin do
         new_controller.should_not_receive(:stop)
         HasRun.has_run = true        
       end    
-    end   
+    end
+    
+    it "should set the cache to be forced" do
+      new_controller = MyController.new(fake_request)
+      dispatch_and_wait(MyController, :start) do |c|
+        MyController.should_receive(:new).and_return(new_controller)
+        new_controller.should_receive(:force_cache!)
+        new_controller.should_receive(:stop).and_return(HasRun.has_run = true)   
+      end
+    end
   end
 end

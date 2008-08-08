@@ -40,7 +40,7 @@ module Merb::Cache::CacheMixin
     def eager_dispatch(action, env = {}, blk = nil)
       kontroller = new(Merb::Request.new(env))
       kontroller.setup_session
-      kontroller._set_skip_cache
+      kontroller.force_cache!
 
       blk.call(kontroller) unless blk.nil?
 
@@ -65,9 +65,11 @@ module Merb::Cache::CacheMixin
   end
 
   def _cache_before(conditions = {})
-    if @_skip_cache.nil? && data = Merb::Cache[_lookup_store(conditions)].read(self, _parameters_and_conditions(conditions).first)
-      throw(:halt, data)
-      @_cache_hit = true
+    unless @_force_cache
+      if @_skip_cache.nil? && data = Merb::Cache[_lookup_store(conditions)].read(self, _parameters_and_conditions(conditions).first)
+        throw(:halt, data)
+        @_cache_hit = true
+      end
     end
   end
 
@@ -95,6 +97,7 @@ module Merb::Cache::CacheMixin
       else
         klass = self.class
       end
+      
       run_later do
         controller = klass.eager_dispatch(action, env, blk)
       end
@@ -107,6 +110,10 @@ module Merb::Cache::CacheMixin
   
   def skip_cache!
     _set_skip_cache
+  end
+
+  def force_cache!
+    @_force_cache = true
   end
 
   def _lookup_store(conditions = {})
