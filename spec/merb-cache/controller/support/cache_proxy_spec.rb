@@ -10,11 +10,7 @@ describe "Merb::Controller cache proxy" do
     
     describe "instance methods" do
       # cache(:store) should instantiate a proxy if one doesn't exist
-      
-      describe "force_cache_update!" do
-        # @controller.cache.force_update!
-      end
-      
+ 
       describe "expire_cache!" do
         # @controller.cache.expire!(:action, :show, {:id => blah}, @controller.request.env)
         # @controller.cache.expire!
@@ -23,8 +19,9 @@ describe "Merb::Controller cache proxy" do
       end
 
       describe "refresh_cache!" do
-        # @controller.cache.refresh!(:action, :show, :id => blah)
-        # @controller.cache(:my_store).refresh!(:page, :index)      
+        # @controller.refresh_cache!(:action, :show, :id => blah)
+        # @controller.refresh_cache!({:action => :store_name}, :show, :id => blah)
+        # @controller.refresh_cache!({:page => [:store1, :store2]}, :index)      
       end
 
       describe "fragment_cache" do
@@ -93,6 +90,24 @@ describe "Merb::Controller cache proxy" do
     describe "retain_cache!" do
       # @controller.cache.retain_cache!
     end
+    
+    describe "force_cache_update!" do
+      # @controller.cache.force_update!
+    end
+  end
+  
+  describe "Page Cache Proxy" do
+    # expire!
+    # refresh!
+  end
+  
+  describe "Action Cache Proxy" do
+    # expire!
+    # refresh!
+  end
+  
+  describe "Fragement Cache Proxy" do
+    # expire!
   end
   
 end

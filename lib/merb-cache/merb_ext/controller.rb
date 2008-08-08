@@ -86,13 +86,36 @@ module Merb::Cache::CacheMixin
       end
     end
   end
+  
+  
+  def eager_cache(action, conditions = {}, env = request.env.dup, &blk)
+    unless @_skip_cache
+      if action.is_a?(Array)
+        klass, action = *action
+      else
+        klass = self.class
+      end
+      run_later do
+        controller = klass.eager_dispatch(action, env, blk)
+      end
+    end
+  end
 
   def _set_skip_cache
     @_skip_cache = true
   end
+  
+  def skip_cache!
+    _set_skip_cache
+  end
 
-  def _lookup_store(conditions)
-    conditions[:store] || conditions[:stores] || Merb::Cache.default_store_name
+  def _lookup_store(conditions = {})
+    conditions[:store] || conditions[:stores] || default_cache_store
+  end
+  
+  # Overwrite this in your controller to change the default store for a given controller
+  def default_cache_store
+    Merb::Cache.default_store_name
   end
 
   #ugly, please make me purdy'er

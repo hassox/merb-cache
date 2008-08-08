@@ -75,7 +75,12 @@ describe Merb::Cache::CacheMixin do
     end
 
     it "should default store name if none is supplied in the conditions hash" do
-      @controller._lookup_store({}).should == Merb::Cache.default_store_name
+      @controller._lookup_store.should == Merb::Cache.default_store_name
+    end
+    
+    it "should request the default_cache_store" do
+      @controller.should_receive(:default_cache_store).and_return(Merb::Cache.default_store_name)
+      @controller._lookup_store
     end
   end
 
@@ -105,5 +110,75 @@ describe Merb::Cache::CacheMixin do
     it "should set @_skip_cache = true" do
       lambda { @controller._set_skip_cache }.should change { @controller.instance_variable_get(:@_skip_cache) }.to(true)
     end
+  end
+
+  describe "eager_cache (Instance Method)" do
+    class HasRun
+      cattr_accessor :has_run
+    end
+    
+    def dispatch_and_wait(*args)
+      @controller = nil
+      Timeout.timeout(2) do
+        until HasRun.has_run do
+          @controller ||= dispatch_to(*args){ |c| 
+            yield c if block_given?
+          }
+        end
+      end
+      @controller
+    end
+    
+    class MyController < Merb::Controller
+      after nil, :only => :start do
+        eager_cache :stop
+      end
+      
+      def start
+        "START"
+      end
+      
+      def stop
+        "STOP"
+      end
+      
+      def inline_call
+        eager_cache :stop
+      end
+    end
+    
+    before(:each) do
+      HasRun.has_run = false
+    end
+    
+    after(:each) do
+      HasRun.has_run = false
+    end
+        
+    it "should run the stop action from a new instance as an after filter" do
+      new_controller = MyController.new(fake_request)
+      dispatch_and_wait(MyController, :start) do |c|
+        MyController.should_receive(:new).and_return(new_controller)
+        new_controller.should_receive(:stop).and_return(HasRun.has_run = true)
+      end
+    end
+    
+    it "should run the stop action from a new instance called inline" do
+      new_controller = MyController.new(fake_request)
+      dispatch_and_wait(MyController, :inline_call) do |c|
+        MyController.should_receive(:new).and_return(new_controller)
+        new_controller.should_receive(:stop).and_return(HasRun.has_run = true)
+      end
+    end
+    
+    it "should not run the stop action if the _set_skip_cache is set to true" do
+      new_controller = MyController.new(fake_request)
+      dispatch_and_wait(MyController, :start) do |c|
+        MyController.stub!(:new).and_return(new_controller)
+        c.skip_cache!
+        new_controller.should_not_receive(:stop)
+        HasRun.has_run = true        
+      end    
+    end   
   end
 end
