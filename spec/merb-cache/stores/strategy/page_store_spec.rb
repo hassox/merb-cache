@@ -63,13 +63,13 @@ describe Merb::Cache::PageStore do
     it "should cache the show action when the team parameter is a route parameter" do
       dispatch_to(NHLScores, :show, :team => 'redwings') {|c| c.request.route_params = {:team => 'redwings'}; c.request.env['REQUEST_PATH'] = url(:show, :team => 'redwings')}
 
-      @dummy.data("/show/redwings.html", :team => 'redwings').should == "NHLScores show(redwings)"
+      @dummy.data("/show/redwings.html").should == "NHLScores show(redwings)"
     end
 
     it "should cache the xml version of a request" do
       dispatch_to(NHLScores, :show, :team => 'redwings') {|c| c.request.route_params = {:team => 'redwings'}; c.request.env['REQUEST_PATH'] = url(:show, :team => 'redwings'); c.content_type = :xml}
 
-      @dummy.data("/show/redwings.xml", :team => 'redwings').should == "NHLScores show(redwings)"
+      @dummy.data("/show/redwings.xml").should == "NHLScores show(redwings)"
     end
 
 

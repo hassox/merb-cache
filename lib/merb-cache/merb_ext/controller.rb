@@ -33,8 +33,8 @@ module Merb::Cache::CacheMixin
         target_controller, target_action = self, target
       end
 
-      after("_eager_cache_#{trigger_action}_after", conditions.only(:if, :unless).merge(:with => [target_controller, target_action, conditions.except(:if, :unless), blk], :only => trigger_action))
-      alias_method "_eager_cache_#{trigger_action}_after", :_eager_cache_after
+      after("_eager_cache_#{trigger_action}_to_#{target_controller.name.snake_case}__#{target_action}_after", conditions.only(:if, :unless).merge(:with => [target_controller, target_action, conditions.except(:if, :unless), blk], :only => trigger_action))
+      alias_method "_eager_cache_#{trigger_action}_to_#{target_controller.name.snake_case}__#{target_action}_after", :_eager_cache_after
     end
 
     def eager_dispatch(action, env = {}, blk = nil)
