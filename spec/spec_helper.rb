@@ -72,3 +72,10 @@ class DummyStore < Merb::Cache::AbstractStore
     @@vault = {}
   end
 end
+
+#TODO change this to a work queue per class called in an after aspect
+class Merb::Controller
+  def run_later
+    yield
+  end
+end

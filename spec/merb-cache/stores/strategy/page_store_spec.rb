@@ -90,10 +90,7 @@ describe Merb::Cache::PageStore do
     end
 
     it "should not eager cache during an eager cache, causing an infinit loop of eagerness" do
-      pending "an easy way to test run_later :("
       dispatch_to(NHLScores, :index) {|c| c.request.env['REQUEST_PATH'] = url(:index)}
-
-      sleep(2) # tried a bunch of stuff, but this was the only way that workes when run with the 'spec' command, not the rake task
 
       @dummy.data("/overview.html").should == "NHLScores overview"
     end
