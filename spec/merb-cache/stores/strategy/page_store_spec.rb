@@ -16,9 +16,17 @@ describe Merb::Cache::PageStore do
     @dummy = @store.stores.first
   end
 
+  def dispatch(url, attrs = {})
+    Merb::Dispatcher.handle(request_for(url, attrs))
+  end
+
+  def request_for(url, attrs = {})
+    Merb::Request.new(Rack::MockRequest.env_for(url, attrs))
+  end
+
   describe "examples" do
 
-    class NHLScores < Merb::Controller
+    class NhlScores < Merb::Controller
       provides :xml, :json, :yaml
 
       cache :index, :show
@@ -49,48 +57,50 @@ describe Merb::Cache::PageStore do
     end
 
     it "should cache the index action on the first request" do
-      dispatch_to(NHLScores, :index) {|c| c.request.env['REQUEST_PATH'] = url(:index)}
+      dispatch(url(:index))
 
       @dummy.data("/index.html").should == "NHLScores index"
     end
 
     it "should cache the yaml version of the index action request" do
-      dispatch_to(NHLScores, :index) {|c| c.request.env['REQUEST_PATH'] = url(:index); c.content_type = :yaml}
+      dispatch(url(:index), "HTTP_ACCEPT" => "application/x-yaml")
 
       @dummy.data("/index.yaml").should == "NHLScores index"
     end
 
     it "should cache the show action when the team parameter is a route parameter" do
-      dispatch_to(NHLScores, :show, :team => 'redwings') {|c| c.request.route_params = {:team => 'redwings'}; c.request.env['REQUEST_PATH'] = url(:show, :team => 'redwings')}
+      dispatch(url(:show, :team => 'redwings'))
 
       @dummy.data("/show/redwings.html").should == "NHLScores show(redwings)"
     end
 
     it "should cache the xml version of a request" do
-      dispatch_to(NHLScores, :show, :team => 'redwings') {|c| c.request.route_params = {:team => 'redwings'}; c.request.env['REQUEST_PATH'] = url(:show, :team => 'redwings'); c.content_type = :xml}
+      dispatch(url(:show, :team => 'redwings'), "HTTP_ACCEPT" => "application/xml")
 
       @dummy.data("/show/redwings.xml").should == "NHLScores show(redwings)"
     end
 
 
     it "should not cache the show action when the team parameter is not a route parameter" do
-      dispatch_to(NHLScores, :show, :team => 'readwings')
+      dispatch_to(NhlScores, :show, :team => 'readwings')
 
       @dummy.vault.should be_empty
     end
 
     it "should not cache the action when a there is a query string parameter" do
-      dispatch_to(NHLScores, :index, :page => 2) {|c| c.request.env['REQUEST_PATH'] = url(:index); c.request.env['QUERY_STRING'] = 'page=2'}
+      dispatch(url(:index, :page => 2))
 
       @dummy.data(url(:index)).should be_nil
     end
 
     it "should not cache a POST request" do
-      dispatch_to(NHLScores, :index) {|c| c.request.env['REQUEST_PATH'] = url(:index); c.request.env['REQUEST_METHOD'] = 'post'}
+      dispatch(url(:index), "REQUEST_METHOD" => "POST")
+
+      @dummy.vault.should be_empty
     end
 
     it "should not eager cache during an eager cache, causing an infinit loop of eagerness" do
-      dispatch_to(NHLScores, :index) {|c| c.request.env['REQUEST_PATH'] = url(:index)}
+      dispatch(url(:overview))
 
       @dummy.data("/overview.html").should == "NHLScores overview"
     end

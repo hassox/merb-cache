@@ -12,7 +12,7 @@ begin
     :distribution => :modula
   }
   cache = Memcached.new(servers, options)
-  key, value = Time.now.to_i.to_s, DateTime.now.to_s
+  key, value = Time.now.to_i.to_s, Time.now.to_s
   cache.set(key, value)
   raise Exception unless cache.get(key) == value
 rescue Exception => e

@@ -50,6 +50,7 @@ module Merb::Cache
     end
 
     def normalize(dispatch)
+      debugger if $DEBUGGIN
       key = dispatch.request.uri.split('?').first
       key << "index" if key =~ /\/$/
       key << ".#{dispatch.content_type}" unless key =~ /\.\w{2,6}/
@@ -57,7 +58,7 @@ module Merb::Cache
     end
 
     def non_route_parameters(dispatch, parameters = {})
-      dispatch.params.merge(parameters).except(*dispatch.request.route_params.keys)
+      dispatch.params.merge(parameters).except(:action, :controller, *dispatch.request.route_params.keys)
     end
   end
 end
