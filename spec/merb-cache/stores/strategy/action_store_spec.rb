@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/../../../spec_helper'
 require File.dirname(__FILE__) + '/abstract_strategy_store_spec'
 
-require 'ruby-debug'
-
 describe Merb::Cache::ActionStore do
   it_should_behave_like 'all strategy stores'
 
