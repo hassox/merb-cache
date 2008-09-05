@@ -3,6 +3,7 @@ require 'rake/gempackagetask'
 require 'rubygems/specification'
 require 'date'
 require "spec/rake/spectask"
+require 'merb-core'
 
 PLUGIN = "merb-cache"
 NAME = "merb-cache"
@@ -14,10 +15,10 @@ SUMMARY = "To provide a cleaner, more modular, heavier spec'd, more blackbox'd c
 
 spec = Gem::Specification.new do |s|
   s.name = NAME
-  s.version = GEM_VERSION
+  s.version = Merb::VERSION
   s.platform = Gem::Platform::RUBY
   s.has_rdoc = true
-  s.extra_rdoc_files = ["README", "LICENSE", 'TODO']
+  s.extra_rdoc_files = ["README", "LICENSE"]
   s.summary = SUMMARY
   s.description = s.summary
   s.author = AUTHOR
@@ -26,7 +27,7 @@ spec = Gem::Specification.new do |s|
   s.add_dependency('merb', '>= 0.9.3')
   s.require_path = 'lib'
   s.autorequire = PLUGIN
-  s.files = %w(LICENSE README Rakefile TODO) + Dir.glob("{lib,spec}/**/*")
+  s.files = %w(LICENSE README Rakefile) + Dir.glob("{lib,spec}/**/*")
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
@@ -35,7 +36,7 @@ end
 
 desc "install the plugin locally"
 task :install => [:package] do
-  sh %{#{sudo} gem install pkg/#{NAME}-#{VERSION} --no-update-sources}
+  sh %{sudo gem install pkg/#{NAME}-#{Merb::VERSION} --no-update-sources}
 end
 
 desc "create a gemspec file"
