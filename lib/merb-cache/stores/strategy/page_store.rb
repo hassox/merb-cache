@@ -50,7 +50,6 @@ module Merb::Cache
     end
 
     def normalize(dispatch)
-      debugger if $DEBUGGIN
       key = dispatch.request.uri.split('?').first
       key << "index" if key =~ /\/$/
       key << ".#{dispatch.content_type}" unless key =~ /\.\w{2,6}/
